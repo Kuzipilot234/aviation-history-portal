@@ -7,6 +7,7 @@ import pandas as pd
 import pydeck as pdk
 import streamlit as st
 from google import genai
+import streamlit.components.v1 as components
 
 
 
@@ -123,6 +124,10 @@ RSS_FEEDS = {
 @st.cache_data(ttl=900)
 def load_news_from_rss():
     articles = []
+    FEEDBACK_FORM_URL = (
+        "https://docs.google.com/forms/d/e/"
+        "1FAIpQLSfR56-Q64jFBLxihSTV5jeyDfbWxxUaPo27zcd79FVeXbtlHA/viewform"
+    )
 
     for category, feed_url in RSS_FEEDS.items():
         feed = feedparser.parse(feed_url)
@@ -200,11 +205,12 @@ wikipedia_databank = {
         " birds successfully evaded the tactical deployments."
     ),
 }
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🏠 Global News Feed",
     "🤖 AI Chatbot",
     "📜 History mini games",
     "🏆 Daily Updated Quick Quiz",
+    "💬 Feedback",
 ])
 
 with tab1:
@@ -587,6 +593,27 @@ with tab4:
                 "Perfect Score! You are a validated Master Historian and Flight"
                 " Enthusiast! 🎖️"
             )
+with tab5:
+    st.header("💬 Help Improve the Portal")
+    st.markdown(
+        "Tell us what you like, what is confusing, and what you would like "
+        "to see in a future update. Your feedback will help improve the beta."
+    )
+
+    components.iframe(
+        "https://docs.google.com/forms/d/e/"
+        "1FAIpQLSfR56-Q64jFBLxihSTV5jeyDfbWxxUaPo27zcd79FVeXbtlHA/viewform"
+        ,
+        height=950,
+        scrolling=True,
+    )
+
+    st.link_button(
+        "Open the feedback form in a new tab",
+        "https://docs.google.com/forms/d/e/"
+        "1FAIpQLSfR56-Q64jFBLxihSTV5jeyDfbWxxUaPo27zcd79FVeXbtlHA/viewform"
+        ,
+    )
 
 st.divider()
 
