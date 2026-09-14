@@ -8,7 +8,7 @@ import pydeck as pdk
 import streamlit as st
 from google import genai
 import streamlit.components.v1 as components
-
+import json
 
 
 
@@ -120,14 +120,16 @@ RSS_FEEDS = {
     "History": "https://www.worldhistory.org/rss/",
 }
 
+FEEDBACK_FORM_URL = (
+    "https://docs.google.com/forms/d/e/"
+    "1FAIpQLSfR56-Q64jFBLxihSTV5jeyDfbWxxUaPo27zcd79FVeXbtlHA/viewform"
+ )
+
 
 @st.cache_data(ttl=900)
 def load_news_from_rss():
     articles = []
-    FEEDBACK_FORM_URL = (
-        "https://docs.google.com/forms/d/e/"
-        "1FAIpQLSfR56-Q64jFBLxihSTV5jeyDfbWxxUaPo27zcd79FVeXbtlHA/viewform"
-    )
+
 
     for category, feed_url in RSS_FEEDS.items():
         feed = feedparser.parse(feed_url)
@@ -148,6 +150,43 @@ def load_news_from_rss():
             )
 
     return articles
+ANNOUNCEMENTS = [
+    {
+        "date": "September 14, 2026",
+        "title": "AI quizzes are now available",
+        "message": (
+            "You can now choose a topic and the number of questions "
+            "for a customized AI-generated quiz."
+        ),
+    },
+    {
+        "date": "September 14, 2026",
+        "title": "New feedback form",
+        "message": (
+            "Please share your ideas and report problems through the "
+            "new Feedback tab."
+        ),
+    },
+]
+ANNOUNCEMENTS = [
+    {
+        "date": "September 14, 2026",
+        "title": "AI quizzes are now available",
+        "message": (
+            "You can now choose a topic and the number of questions "
+            "for a customized AI-generated quiz."
+        ),
+    },
+    {
+        "date": "September 14, 2026",
+        "title": "New feedback form",
+        "message": (
+            "Please share your ideas and report problems through the "
+            "new Feedback tab."
+        ),
+    },
+]
+
 rss_articles = load_news_from_rss()
 
 st.markdown(
@@ -161,56 +200,15 @@ st.markdown(
 )
 st.divider()
 
-wikipedia_databank = {
-    "sabiha gokcen": (
-        "Sabiha Gökçen is the first female military pilot in the world. She"
-        " graduated from Üsküdar American College and trained at the Eskişehir"
-        " Aviation School. As the adopted daughter of Mustafa Kemal Atatürk,"
-        " her legacy continues to inspire generations of aviators globally."
-    ),
-    "b-52 stratofortress": (
-        "The B-52 Stratofortress remains one of the longest-serving heavy"
-        " bombers in military history. First flying in 1952, this strategic"
-        " aircraft is projected to receive engineering upgrades allowing it to"
-        " sustain operations for nearly another quarter-century."
-    ),
-    "global air traffic": (
-        "Global aviation infrastructure orchestrates over 200,000 aircraft"
-        " movements daily. Currently, Hartsfield-Jackson Atlanta holds the"
-        " record for absolute passenger volume, closely followed by Istanbul"
-        " Airport as Europe's premier strategic transit hub."
-    ),
-    "lightning protection": (
-        "Modern aerospace engineering guarantees that commercial flights are"
-        " immune to lightning strikes. High-tech composite frames, like those"
-        " found on the Boeing 787 and 777, feature integrated aluminum mesh"
-        " shields to instantly dissipate high-voltage currents."
-    ),
-    "messerschmitt me 262": (
-        "The Messerschmitt Me 262 was the world's first operational jet-powered"
-        " fighter aircraft, introduced by Germany during WWII. Its extreme"
-        " speed initially baffled Allied commanders, fundamentally rewriting"
-        " tactical air combat doctrines."
-    ),
-    "fastest war in history": (
-        "The Anglo-Zanzibar War of August 27, 1896, stands as the shortest"
-        " recorded conflict in human history. Lasting exactly 38 minutes, the"
-        " conflict concluded swiftly following decisive naval artillery"
-        " bombardment by British warships."
-    ),
-    "emu war": (
-        "The Great Emu War of 1932 was a bizarre military operation where the"
-        " Australian military deployed soldiers armed with Lewis guns to cull"
-        " an overpopulation of emu birds destroying crops. The highly agile"
-        " birds successfully evaded the tactical deployments."
-    ),
-}
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+
+
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "🏠 Global News Feed",
     "🤖 AI Chatbot",
     "📜 History mini games",
-    "🏆 Daily Updated Quick Quiz",
+    "🏆 AI generated quiz",
     "💬 Feedback",
+    "✈️Global Aviation radars"
 ])
 
 with tab1:
@@ -230,43 +228,46 @@ with tab1:
     ]
     st.info(random.choice(quotes))
 
+    st.subheader("📢 Announcements")
+
+    for announcement in ANNOUNCEMENTS:
+        st.info(
+            f"**{announcement['title']}**\n\n"
+            f"_{announcement['date']}_\n\n"
+            f"{announcement['message']}"
+        )
+
     st.divider()
 
-    st.markdown("### 🔍 Global Aviation & History Database ")
-    wiki_query = st.text_input(
-        "Search our database!",
-        placeholder=(
-            "Type an entity (e.g., Sabiha, B-52, Emu, Me 262, Lightning)..."
-        ),
-        key="wiki_search_input",
-    )
-
-    if wiki_query.strip() != "":
-        match_found = False
-        for key, value in wikipedia_databank.items():
-            if wiki_query.lower() in key:
-                st.markdown(f"#### 📖 Encyclopedia Entry: {key.upper()}")
-                st.success(value)
-                match_found = True
-        if not match_found:
-            st.warning(
-                "No official encyclopedia record found. However, you can"
-                " instantly ask our AI Chatbot below for full details!"
-            )
-        st.divider()
-
-    st.subheader("📰 Live Global News Feed")
+    st.subheader("📰 Global News Feed")
     st.markdown(
-        "Stay informed with direct journalistic updates covering global"
-        " aviation milestones, defense strategies, and archival historical"
-        " findings."
+        "Read the latest aviation and history stories from the selected RSS sources."
     )
 
-    if rss_articles:
+    aviation_articles = [
+        article
+        for article in rss_articles
+        if article["category"] == "Aviation"
+    ]
+
+    history_articles = [
+        article
+        for article in rss_articles
+        if article["category"] == "History"
+    ]
+
+
+    def display_news_section(section_title, articles, empty_message):
+        st.markdown(f"### {section_title}")
+
+        if not articles:
+            st.info(empty_message)
+            return
+
         news_cols = st.columns(3)
 
-        for idx, article in enumerate(rss_articles):
-            col_target = news_cols[idx % 3]
+        for index, article in enumerate(articles):
+            col_target = news_cols[index % 3]
 
             with col_target:
                 st.markdown(f"##### {article['title']}")
@@ -280,94 +281,23 @@ with tab1:
                         "Read original article",
                         article["url"],
                     )
-    else:
-        st.info("No news articles are available right now.")
+
+
+    display_news_section(
+        "✈️ Aviation News",
+        aviation_articles,
+        "No aviation news is available right now.",
+    )
 
     st.divider()
 
-    st.subheader("🌐 Global Radars")
-    rad1, rad2 = st.columns(2)
+    display_news_section(
+        "📜 History News",
+        history_articles,
+        "No history news is available right now.",
+    )
 
-    with rad1:
-        st.markdown("**🌍 Live Aviation Weather & Wind Radar**")
-        weather_radar_html = '<iframe src="https://ventusky.com" width="100%" height="500px" style="border:none; border-radius: 10px;"></iframe>'
-        st.markdown(weather_radar_html, unsafe_allow_html=True)
-
-    with rad2:
-        st.markdown("**📍 Kuzey's Global Aviation & Strategy Atlas**")
-        map_data = {
-            "lat": [
-                41.2753,
-                40.0786,
-                38.3492,
-                39.9494,
-                34.9154,
-                54.4920,
-                33.6407,
-                35.6528,
-            ],
-            "lon": [
-                28.7519,
-                32.5694,
-                34.0536,
-                32.6889,
-                -117.8853,
-                -3.4219,
-                -84.4277,
-                139.7594,
-            ],
-            "name": [
-                "Istanbul Airport (IST)",
-                "Mürted Air Base (Ankara)",
-                "Incirlik Air Base (Adana)",
-                "Eskişehir Air Base",
-                "Edwards Air Force Base (USA)",
-                "RAF Lossiemouth (UK)",
-                "Hartsfield-Jackson Atlanta (USA)",
-                "Tokyo Haneda (Japan)",
-            ],
-            "details": [
-                "Europe's modern megahub.",
-                "Historically significant Turkish jet base.",
-                "Strategic NATO aviation hub.",
-                "Birthplace of Turkish aviation.",
-                (
-                    "Aerospace test center where the sound barrier was"
-                    " broken."
-                ),
-                "Historic Royal Air Force base.",
-                "The busiest passenger airport in the world.",
-                "Major Asian aviation hub.",
-            ],
-        }
-        df = pd.DataFrame(map_data)
-        layer = pdk.Layer(
-            "ScatterplotLayer",
-            df,
-            get_position=["lon", "lat"],
-            get_color=[255, 75, 75, 200],
-            get_radius=90000,
-            pickable=True,
-        )
-        view_state = pdk.ViewState(latitude=35.0, longitude=25.0, zoom=3)
-        tooltip_style = {
-            "html": "<b>{name}</b><br/>ℹ️ {details}",
-            "style": {
-                "backgroundColor": "#1a1a1a",
-                "color": "white",
-                "borderRadius": "5px",
-                "border": "1px solid #FF4B4B",
-            },
-        }
-        st.pydeck_chart(
-            pdk.Deck(
-                layers=[layer],
-                initial_view_state=view_state,
-                tooltip=tooltip_style,
-            ),
-            use_container_width=True,
-        )
-
+    st.divider()
 
 with tab2:
     st.header("🤖 Kuzeys Aviation & History Portal AI Chatbot")
@@ -512,87 +442,277 @@ with tab3:
         del st.session_state.secret_figure
         st.rerun()
 
-
 with tab4:
-    st.header("🏆 Operational Knowledge Quiz")
+    st.header("🤖 AI-Generated Knowledge Quiz")
     st.markdown(
-        "Complete the fields below to verify your strategic clearance score."
+        "Choose a topic and the number of questions. The AI will create "
+        "a multiple-choice quiz for you."
     )
 
-    q1 = st.radio(
-        "1. What is the largest plane in the world?",
-        ["Boeing 777", "Boeing 787", "Airbus A380"],
-    )
-    st.divider()
-    q2 = st.radio(
-        "2. What is the most sold passenger jet in the history?",
-        ["Boeing 737", "Airbus A330", "Airbus A320"],
-    )
-    st.divider()
-    q3 = st.radio(
-        "3. What is the start date of the World war 2?",
-        ["1945", "1939", "1914"],
-    )
-    st.divider()
-    q4 = st.radio(
-        "4. What is the Soviet Unions Founder?",
-        ["Vladimir Lenin", "Stalin", "Brezhnev"],
-    )
-    st.divider()
-    q5 = st.radio(
-        "5. Who was the leader of Vichy France during WW2",
-        ["Charles De Gaulle", "Petain", "Churchill"],
-    )
-    st.divider()
-    q6 = st.radio(
-        "6. Lauda Airlines belongs to which country?",
-        ["Ireland", "Russia", "Austria"],
-    )
-    st.divider()
-    q7 = st.radio(
-        "7. What was the tactics name Germans used in WW2?",
-        ["Blitzkrieg", "German", "Great Tactic"],
-    )
-    st.divider()
-    q8 = st.radio(
-        "8. What is the Russias Flag Carrier Airline?",
-        ["S7 Air.", "Aeroflot", "Rossiya"],
-    )
-    st.divider()
-    q9 = st.radio(
-        "9. What is the attacks name that japans did to Americans during"
-        " WW2?",
-        ["Pearl Harbor", "Operation Market Garden", "Operation Great Sun"],
+    quiz_topic = st.text_input(
+        "What should the quiz be about?",
+        value="Aviation and world history",
+        max_chars=100,
+        key="quiz_topic_input",
     )
 
-    if st.button("Calculate Final Score", key="quiz_submit"):
-        score = 0
-        if q1 == "Airbus A380":
-            score += 1
-        if q2 == "Airbus A320":
-            score += 1
-        if q3 == "1939":
-            score += 1
-        if q4 == "Vladimir Lenin":
-            score += 1
-        if q5 == "Petain":
-            score += 1
-        if q6 == "Austria":
-            score += 1
-        if q7 == "Blitzkrieg":
-            score += 1
-        if q8 == "Aeroflot":
-            score += 1
-        if q9 == "Pearl Harbor":
-            score += 1
+    question_count = st.slider(
+        "How many questions do you want?",
+        min_value=1,
+        max_value=10,
+        value=5,
+        key="quiz_question_count",
+    )
 
-        st.subheader(f"Your Verified Score: {score}/9")
-        if score == 9:
-            st.balloons()
-            st.success(
-                "Perfect Score! You are a validated Master Historian and Flight"
-                " Enthusiast! 🎖️"
+    if st.button("Generate AI Quiz", key="generate_ai_quiz"):
+        topic = quiz_topic.strip()
+
+        if topic == "":
+            st.warning("Please enter a quiz topic first.")
+        else:
+            with st.spinner("Creating your quiz..."):
+                try:
+                    quiz_client = genai.Client(
+                        api_key=st.secrets["GEMINI_API_KEY"]
+                    )
+
+                    quiz_prompt = f"""
+Create a multiple-choice quiz about: {topic}
+
+Create exactly {question_count} questions.
+Each question must have exactly four answer options.
+Only one answer may be correct.
+
+Return ONLY valid JSON in this exact format:
+[
+  {{
+    "question": "Question text",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "answer_index": 0,
+    "explanation": "Short explanation of the correct answer"
+  }}
+]
+
+The answer_index must be a number from 0 to 3.
+Do not include Markdown, commentary, or code fences.
+"""
+
+                    response = quiz_client.models.generate_content(
+                        model="gemini-3.6-flash",
+                        contents=quiz_prompt,
+                    )
+
+                    response_text = response.text.strip()
+
+                    # Remove code fences if the AI adds them anyway.
+                    if response_text.startswith("```"):
+                        response_text = response_text.replace(
+                            "```json", "", 1
+                        )
+                        response_text = response_text.replace(
+                            "```", ""
+                        ).strip()
+
+                    generated_quiz = json.loads(response_text)
+
+                    # Basic validation before displaying AI-generated data.
+                    if not isinstance(generated_quiz, list):
+                        raise ValueError("Quiz response was not a list.")
+
+                    if len(generated_quiz) != question_count:
+                        raise ValueError(
+                            "The AI returned the wrong number of questions."
+                        )
+
+                    for question in generated_quiz:
+                        if not isinstance(question, dict):
+                            raise ValueError("Invalid question format.")
+
+                        if not isinstance(
+                            question.get("question"), str
+                        ):
+                            raise ValueError("Invalid question text.")
+
+                        if not isinstance(
+                            question.get("options"), list
+                        ) or len(question["options"]) != 4:
+                            raise ValueError(
+                                "Each question must have four options."
+                            )
+
+                        answer_index = question.get("answer_index")
+                        if answer_index not in [0, 1, 2, 3]:
+                            raise ValueError(
+                                "Invalid correct-answer index."
+                            )
+
+                    st.session_state.ai_quiz = generated_quiz
+                    st.session_state.ai_quiz_version = (
+                        st.session_state.get("ai_quiz_version", 0) + 1
+                    )
+                    st.success("Your AI quiz is ready!")
+
+                except Exception:
+                    st.error(
+                        "The AI could not create the quiz right now. "
+                        "Please try again with another topic."
+                    )
+
+    if "ai_quiz" in st.session_state:
+        st.divider()
+        st.subheader("Your Quiz")
+
+        quiz_version = st.session_state.get("ai_quiz_version", 0)
+        selected_answers = []
+
+        for index, question in enumerate(st.session_state.ai_quiz):
+            selected_answer = st.radio(
+                f"{index + 1}. {question['question']}",
+                question["options"],
+                index=None,
+                key=f"ai_answer_{quiz_version}_{index}",
             )
+            selected_answers.append(selected_answer)
+
+            if index < len(st.session_state.ai_quiz) - 1:
+                st.divider()
+
+        if st.button("Check My Answers", key="check_ai_quiz"):
+            unanswered_questions = [
+                index + 1
+                for index, answer in enumerate(selected_answers)
+                if answer is None
+            ]
+
+            if unanswered_questions:
+                missing = ", ".join(
+                    str(number) for number in unanswered_questions
+                )
+                st.warning(
+                    f"Please answer question(s) {missing} before checking your quiz."
+                )
+            else:
+                score = 0
+
+                for index, question in enumerate(st.session_state.ai_quiz):
+                    correct_answer = question["options"][
+                        question["answer_index"]
+                    ]
+
+                    if selected_answers[index] == correct_answer:
+                        score += 1
+
+                st.subheader(
+                    f"Your Score: {score}/{len(st.session_state.ai_quiz)}"
+                )
+
+                for index, question in enumerate(st.session_state.ai_quiz):
+                    correct_answer = question["options"][
+                        question["answer_index"]
+                    ]
+
+                    if selected_answers[index] == correct_answer:
+                        st.success(
+                            f"✅ Question {index + 1}: Correct!"
+                        )
+                    else:
+                        st.error(
+                            f"❌ Question {index + 1}: Incorrect. "
+                            f"Correct answer: **{correct_answer}**"
+                        )
+
+                    explanation = question.get("explanation", "")
+                    if explanation:
+                        st.caption(f"Explanation: {explanation}")
+
+                if score == len(st.session_state.ai_quiz):
+                    st.balloons()
+                    st.success("Perfect score!")
+
+with tab6:
+    st.subheader("🌐 Global Radars")
+    rad1, rad2 = st.columns(2)
+
+    with rad1:
+        st.markdown("**🌍 Live Aviation Weather & Wind Radar**")
+        weather_radar_html = '<iframe src="https://ventusky.com" width="100%" height="500px" style="border:none; border-radius: 10px;"></iframe>'
+        st.markdown(weather_radar_html, unsafe_allow_html=True)
+
+    with rad2:
+        st.markdown("**📍 Kuzey's Global Aviation & Strategy Atlas**")
+        map_data = {
+            "lat": [
+                41.2753,
+                40.0786,
+                38.3492,
+                39.9494,
+                34.9154,
+                54.4920,
+                33.6407,
+                35.6528,
+            ],
+            "lon": [
+                28.7519,
+                32.5694,
+                34.0536,
+                32.6889,
+                -117.8853,
+                -3.4219,
+                -84.4277,
+                139.7594,
+            ],
+            "name": [
+                "Istanbul Airport (IST)",
+                "Mürted Air Base (Ankara)",
+                "Incirlik Air Base (Adana)",
+                "Eskişehir Air Base",
+                "Edwards Air Force Base (USA)",
+                "RAF Lossiemouth (UK)",
+                "Hartsfield-Jackson Atlanta (USA)",
+                "Tokyo Haneda (Japan)",
+            ],
+            "details": [
+                "Europe's modern megahub.",
+                "Historically significant Turkish jet base.",
+                "Strategic NATO aviation hub.",
+                "Birthplace of Turkish aviation.",
+                (
+                    "Aerospace test center where the sound barrier was"
+                    " broken."
+                ),
+                "Historic Royal Air Force base.",
+                "The busiest passenger airport in the world.",
+                "Major Asian aviation hub.",
+            ],
+        }
+        df = pd.DataFrame(map_data)
+        layer = pdk.Layer(
+            "ScatterplotLayer",
+            df,
+            get_position=["lon", "lat"],
+            get_color=[255, 75, 75, 200],
+            get_radius=90000,
+            pickable=True,
+        )
+        view_state = pdk.ViewState(latitude=35.0, longitude=25.0, zoom=3)
+        tooltip_style = {
+            "html": "<b>{name}</b><br/>ℹ️ {details}",
+            "style": {
+                "backgroundColor": "#1a1a1a",
+                "color": "white",
+                "borderRadius": "5px",
+                "border": "1px solid #FF4B4B",
+            },
+        }
+        st.pydeck_chart(
+            pdk.Deck(
+                layers=[layer],
+                initial_view_state=view_state,
+                tooltip=tooltip_style,
+            ),
+            use_container_width=True,
+        )
+
 with tab5:
     st.header("💬 Help Improve the Portal")
     st.markdown(
@@ -611,8 +731,8 @@ with tab5:
     st.link_button(
         "Open the feedback form in a new tab",
         "https://docs.google.com/forms/d/e/"
-        "1FAIpQLSfR56-Q64jFBLxihSTV5jeyDfbWxxUaPo27zcd79FVeXbtlHA/viewform"
-        ,
+        "1FAIpQLSfR56-Q64jFBLxihSTV5jeyDfbWxxUaPo27zcd79FVeXbtlHA/viewform",
+
     )
 
 st.divider()
