@@ -1,6 +1,7 @@
 import base64
 import json
 import random
+import time
 from pathlib import Path
 
 import feedparser
@@ -387,6 +388,10 @@ elif selected_page == "chatbot":
     st.markdown(
         "Ask the portal AI about general aviation, military aviation, or history."
     )
+    if "last_chat_time" not in st.session_state:
+        st.session_state.last_chat_time = 0
+
+    COOLDOWN_SECONDS = 15
 
     user_query = st.text_area(
         "Ask anything to the portal AI chatbot:",
@@ -395,9 +400,14 @@ elif selected_page == "chatbot":
     )
 
     if st.button("Get an answer", key="chat_button_unique"):
-        if not user_query.strip():
+        seconds_since_last = time.time() - st.session_state.last_chat_time
+        if seconds_since_last < COOLDOWN_SECONDS:
+            wait_time = round(COOLDOWN_SECONDS - seconds_since_last)
+            st.warning(f"Please wait {wait_time} more second(s) before asking again.")
+        elif not user_query.strip():
             st.warning("Please enter a question first.")
         else:
+            st.session_state.last_chat_time = time.time()
             with st.spinner("Preparing an answer..."):
                 try:
                     client = genai.Client(
@@ -415,10 +425,16 @@ elif selected_page == "chatbot":
                     )
                     st.subheader("Strategic Intelligence Report")
                     st.write(response.text)
-                except Exception:
-                    st.error(
-                        "The chatbot could not connect right now. Please try again later."
-                    )
+                except Exception as e:
+                    if "503" in str(e) or "UNAVAILABLE" in str(e):
+                        st.warning(
+                            "The AI service is experiencing high demand right now. "
+                            "Please try again in a few minutes."
+                        )
+                    else:
+                        st.error(
+                            "The chatbot could not connect right now. Please try again later."
+                        )
 
 
 elif selected_page == "history":
@@ -540,12 +556,22 @@ elif selected_page == "quiz":
         key="quiz_question_count",
     )
 
+    if "last_quiz_time" not in st.session_state:
+        st.session_state.last_quiz_time = 0
+
+    QUIZ_COOLDOWN_SECONDS = 20
+
     if st.button("Generate AI Quiz", key="generate_ai_quiz"):
+        seconds_since_last = time.time() - st.session_state.last_quiz_time
         topic = quiz_topic.strip()
 
-        if not topic:
+        if seconds_since_last < QUIZ_COOLDOWN_SECONDS:
+            wait_time = round(QUIZ_COOLDOWN_SECONDS - seconds_since_last)
+            st.warning(f"Please wait {wait_time} more second(s) before generating another quiz.")
+        elif not topic:
             st.warning("Please enter a quiz topic first.")
         else:
+            st.session_state.last_quiz_time = time.time()
             with st.spinner("Creating your quiz..."):
                 try:
                     quiz_client = genai.Client(
