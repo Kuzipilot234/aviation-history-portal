@@ -12,7 +12,6 @@ import streamlit.components.v1 as components
 from google import genai
 from PIL import Image
 
-
 st.set_page_config(
     page_title="Kuzey's Aviation and History Portal",
     page_icon="✈️",
@@ -36,8 +35,8 @@ st.markdown(
     .stApp {{
         background-image:
             linear-gradient(
-                rgba(7, 20, 38, 0.78),
-                rgba(7, 20, 38, 0.88)
+                rgba(11, 31, 51, 0.82),
+                rgba(11, 31, 51, 0.92)
             ),
             url("data:image/jpeg;base64,{background_base64}");
         background-size: cover;
@@ -50,12 +49,12 @@ st.markdown(
     }}
 
     h1, h2, h3, h4 {{
-        color: #ff6b4a !important;
+        color: #f97316 !important;
     }}
 
 [data-testid="stSidebar"] {{
-    background: #374151 !important;
-    border-right: 1px solid #1f2937 !important;
+    background: #0b1f33 !important;
+    border-right: 1px solid #163a5c !important;
 }}
 
     [data-testid="stSidebar"] p,
@@ -65,11 +64,11 @@ st.markdown(
     [data-testid="stSidebar"] h3,
     [data-testid="stSidebar"] h4,
     [data-testid="stSidebar"] .stMarkdown {{
-        color: #071426 !important;
+        color: #f8fafc !important;
     }}
 
     [data-testid="stSidebar"] hr {{
-        border-color: #d7dee8 !important;
+        border-color: #486581 !important;
     }}
 
     /* Sidebar navigation appears as flat clickable menu links. */
@@ -77,7 +76,7 @@ st.markdown(
     [data-testid="stSidebar"] .stButton > button p {{
         width: 100% !important;
         background-color: transparent !important;
-        color: #071426 !important;
+        color: #f8fafc !important;
         border: none !important;
         border-radius: 6px !important;
         box-shadow: none !important;
@@ -90,35 +89,35 @@ st.markdown(
 
     [data-testid="stSidebar"] .stButton > button:hover,
     [data-testid="stSidebar"] .stButton > button:hover p {{
-        background-color: #eef3f8 !important;
-        color: #e35d3f !important;
+        background-color: #1e3a56 !important;
+        color: #c2410c !important;
     }}
 
     /* Main-page action buttons. */
     .stButton > button {{
-        background-color: #ff6b4a !important;
-        color: #071426 !important;
-        border: 1px solid #ff6b4a !important;
+        background-color: #f97316 !important;
+        color: #f8fafc !important;
+        border: 1px solid #f97316 !important;
         border-radius: 8px !important;
         font-weight: 700 !important;
     }}
 
     .stButton > button p {{
-        color: #071426 !important;
+        color: #f8fafc !important;
     }}
 
     .stButton > button:hover {{
-        background-color: #ff8568 !important;
-        color: #071426 !important;
-        border-color: #ff8568 !important;
+        background-color: #fb923c !important;
+        color: #f8fafc !important;
+        border-color: #fb923c !important;
     }}
 
     .stLinkButton a,
     .stLinkButton a p,
     [data-testid="stLinkButton"] a {{
-        background-color: #ff6b4a !important;
-        color: #071426 !important;
-        border: 1px solid #ff6b4a !important;
+        background-color: #f97316 !important;
+        color: #f8fafc !important;
+        border: 1px solid #f97316 !important;
         border-radius: 8px !important;
         font-weight: 700 !important;
         text-decoration: none !important;
@@ -127,52 +126,52 @@ st.markdown(
     .stLinkButton a:hover,
     .stLinkButton a:hover p,
     [data-testid="stLinkButton"] a:hover {{
-        background-color: #ff8568 !important;
-        color: #071426 !important;
-        border-color: #ff8568 !important;
+        background-color: #fb923c !important;
+        color: #f8fafc !important;
+        border-color: #fb923c !important;
     }}
 
     [data-testid="stTextInput"] input,
     [data-testid="stTextArea"] textarea {{
-        background-color: #f1f5f9 !important;
-        color: #071426 !important;
-        border: 2px solid #ff6b4a !important;
+        background-color: #f8fafc !important;
+        color: #111827 !important;
+        border: 2px solid #f97316 !important;
         border-radius: 8px !important;
     }}
 
     [data-testid="stTextInput"] input::placeholder,
     [data-testid="stTextArea"] textarea::placeholder {{
-        color: #64748b !important;
+        color: #cbd5e1 !important;
     }}
 
     [data-testid="stTabs"] button {{
-        color: #dbeafe !important;
+        color: #ffedd5 !important;
         font-weight: 600 !important;
     }}
 
     [data-testid="stTabs"] button[aria-selected="true"] {{
-        color: #ff6b4a !important;
-        border-bottom-color: #ff6b4a !important;
+        color: #f97316 !important;
+        border-bottom-color: #f97316 !important;
     }}
 
     [data-testid="stExpander"] summary,
     [data-testid="stExpander"] summary p,
     [data-testid="stExpander"] summary span {{
-        color: #ff6b4a !important;
+        color: #f97316 !important;
         font-weight: 700 !important;
     }}
 
     [data-testid="stExpander"] summary:hover {{
-        color: #ff8568 !important;
+        color: #fb923c !important;
     }}
     [data-testid="stSidebar"] .stButton > button {{
     width: 100% !important;
     min-height: 48px !important;
     margin-bottom: 8px !important;
     padding: 0 14px !important;
-    background: #14b8a6 !important;
-    color: #ffffff !important;
-    border: 1px solid #5eead4 !important;
+    background: #f97316 !important;
+    color: #f8fafc !important;
+    border: 1px solid #fdba74 !important;
     border-radius: 8px !important;
     font-size: 1.05rem !important;
     font-weight: 700 !important;
@@ -181,7 +180,7 @@ st.markdown(
     [data-testid="stSidebar"] h2 {{
     font-family: 'Lora', Georgia, serif !important;
     font-size: 1.65rem !important;
-    color: #ffffff !important;
+    color: #f8fafc !important;
     letter-spacing: 0.5px !important;
 }}
 
@@ -189,7 +188,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
 
 RSS_FEEDS = {
     "Aviation": "https://simpleflying.com/feed/",
@@ -203,18 +201,18 @@ FEEDBACK_FORM_URL = (
 
 ANNOUNCEMENTS = [
     {
-        "date": "September 16 2026",
-        "title": "A new sidebar menu has added",
+        "date": "September 18 2026",
+        "title": "Major Update!! A new AI daily news briefing function is added",
         "message": (
-            "You can now browse freely in the new sidebar menu "
+            "You can now see a short summarized briefing of the latest aviation and history news!  "
 
         ),
     },
     {
-        "date": "September 14, 2026",
-        "title": "New feedback form",
+        "date": "September 18, 2026",
+        "title": "Updated AI generated quiz",
         "message": (
-            "Share your ideas and report problems through the new Feedback tab."
+            "You can now select your quiz's difficulty"
         ),
     },
 ]
@@ -247,6 +245,37 @@ def load_news_from_rss():
     return articles
 
 
+@st.cache_data(ttl=21600, show_spinner=False)
+def generate_daily_briefing(article_payload):
+    """Create one cached briefing from the latest RSS headlines and summaries."""
+    if not article_payload:
+        return "There is not enough recent news to prepare a briefing right now."
+
+    try:
+        client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+        source_text = "\n".join(
+            f"[{item['category']}] {item['title']}: {item['summary']}"
+            for item in article_payload[:12]
+        )
+        prompt = (
+                "You are the editor of Kuzey's Aviation and History Portal. "
+                "Write a concise daily briefing in 3 short paragraphs: one aviation "
+                "update, one history update, and one overall takeaway. Use only the "
+                "information supplied below. Do not invent facts, dates, or events. "
+                "Do not use Markdown headings.\n\n" + source_text
+        )
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt,
+        )
+        return response.text.strip()
+    except Exception:
+        return (
+            "The AI daily briefing is temporarily unavailable. You can still "
+            "browse the latest aviation and history stories below."
+        )
+
+
 def display_news_section(section_title, articles, empty_message):
     st.markdown(f"### {section_title}")
 
@@ -273,12 +302,12 @@ def display_news_section(section_title, articles, empty_message):
 rss_articles = load_news_from_rss()
 
 PAGE_LABELS = {
-        "news":"🏠 Global News Feed",
-"chatbot": "🤖 AI Chatbot",
+    "news": "🏠 Global News Feed",
+    "chatbot": "🤖 AI Chatbot",
     "history": "📜 History Mini Games",
-    "quiz":    "🏆 AI Generated Quiz",
-    "feedback":"💬 Feedback",
-    "radars":  "✈️ Aviation Radars",
+    "quiz": "🏆 AI Generated Quiz",
+    "feedback": "💬 Feedback",
+    "radars": "✈️ Aviation Radars",
 }
 
 if "selected_page" not in st.session_state:
@@ -297,11 +326,11 @@ with st.sidebar:
 
     st.markdown(
         """
-        <h2 style="color: #071426; margin-bottom: 0;">
+        <h2 style="color: #f8fafc; margin-bottom: 0;">
             Kuzey Aviation and History Portal
         </h2>
-        <p style="color: #64748b; margin-top: 0;">
-            
+        <p style="color: #cbd5e1; margin-top: 0;">
+
         </p>
         """,
         unsafe_allow_html=True,
@@ -311,9 +340,9 @@ with st.sidebar:
 
     for page_id, page_label in PAGE_LABELS.items():
         if st.button(
-            page_label,
-            key=f"navigation_{page_id}",
-            use_container_width=True,
+                page_label,
+                key=f"navigation_{page_id}",
+                use_container_width=True,
         ):
             st.session_state.selected_page = page_id
             st.rerun()
@@ -324,7 +353,7 @@ with st.sidebar:
 selected_page = st.session_state.selected_page
 
 st.markdown(
-    "<h1 style='text-align: center; color: #FF4B4B; font-size: 42px;'>"
+    "<h1 style='text-align: center; color: #f97316; font-size: 42px;'>"
     "✈️ Kuzey's Aviation & History Portal 📜</h1>",
     unsafe_allow_html=True,
 )
@@ -335,7 +364,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.divider()
-
 
 if selected_page == "news":
     quotes = [
@@ -358,6 +386,19 @@ if selected_page == "news":
     st.markdown(
         "Read the latest aviation and history stories from the selected RSS sources."
     )
+
+    st.subheader("☀️ Daily Briefing")
+    st.caption("A short AI summary based on the latest cached RSS articles. Refreshed every six hours.")
+    briefing_payload = tuple(
+        {
+            "category": article["category"],
+            "title": article["title"],
+            "summary": article["summary"],
+        }
+        for article in rss_articles
+    )
+    with st.container(border=True):
+        st.write(generate_daily_briefing(briefing_payload))
 
     aviation_articles = [
         article
@@ -505,8 +546,8 @@ elif selected_page == "history":
         st.session_state.secret_figure = random.choice(figures)
 
     for index, clue in enumerate(
-        st.session_state.secret_figure["clues"],
-        start=1,
+            st.session_state.secret_figure["clues"],
+            start=1,
     ):
         st.markdown(f"• Clue {index}: {clue}")
 
@@ -537,31 +578,46 @@ elif selected_page == "history":
 
 
 elif selected_page == "quiz":
-    st.header("🤖 AI-Generated Knowledge Quiz")
+    st.header("🏆 AI-Generated Knowledge Quiz")
     st.markdown(
-        "Choose a topic and the number of questions. The AI will create a multiple-choice quiz for you."
+        "Build a quiz around any topic, then submit it to reveal your score, "
+        "correct answers, and explanations."
     )
 
-    quiz_topic = st.text_input(
-        "What should the quiz be about?",
-        value="Aviation and world history",
-        max_chars=100,
-        key="quiz_topic_input",
-    )
-    question_count = st.slider(
-        "How many questions do you want?",
-        min_value=1,
-        max_value=10,
-        value=5,
-        key="quiz_question_count",
-    )
+    setup_col, preview_col = st.columns([1.35, 1])
+    with setup_col:
+        quiz_topic = st.text_input(
+            "What should the quiz be about?",
+            value="Aviation and world history",
+            max_chars=100,
+            key="quiz_topic_input",
+        )
+        difficulty = st.selectbox(
+            "Choose a difficulty",
+            ["Easy", "Medium", "Hard"],
+            index=1,
+            key="quiz_difficulty",
+        )
+        question_count = st.slider(
+            "How many questions do you want?",
+            min_value=5,
+            max_value=10,
+            value=5,
+            key="quiz_question_count",
+        )
+    with preview_col:
+        st.info(
+            f"Your quiz will contain **{question_count} questions** at "
+            f"**{difficulty.lower()}** difficulty.\n\n"
+            "Answer every question, then select **Check My Answers** to see "
+            "the results."
+        )
 
     if "last_quiz_time" not in st.session_state:
         st.session_state.last_quiz_time = 0
 
     QUIZ_COOLDOWN_SECONDS = 20
-
-    if st.button("Generate AI Quiz", key="generate_ai_quiz"):
+    if st.button("✨ Generate New Quiz", key="generate_ai_quiz", use_container_width=True):
         seconds_since_last = time.time() - st.session_state.last_quiz_time
         topic = quiz_topic.strip()
 
@@ -572,145 +628,102 @@ elif selected_page == "quiz":
             st.warning("Please enter a quiz topic first.")
         else:
             st.session_state.last_quiz_time = time.time()
-            with st.spinner("Creating your quiz..."):
+            with st.spinner("Creating your personalized quiz..."):
                 try:
-                    quiz_client = genai.Client(
-                        api_key=st.secrets["GEMINI_API_KEY"]
-                    )
+                    quiz_client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
                     quiz_prompt = f"""
-Create a multiple-choice quiz about: {topic}
+Create a {difficulty.lower()} multiple-choice quiz about: {topic}
 
-Create exactly {question_count} questions.
-Each question must have exactly four answer options.
-Only one answer may be correct.
-
+Create exactly {question_count} questions. Each question must have exactly four answer options and only one correct answer.
 Return ONLY valid JSON in this exact format:
-[
-  {{
-    "question": "Question text",
-    "options": ["Option A", "Option B", "Option C", "Option D"],
-    "answer_index": 0,
-    "explanation": "Short explanation of the correct answer"
-  }}
-]
-
-The answer_index must be a number from 0 to 3.
-Do not include Markdown, commentary, or code fences.
+[{{
+  "question": "Question text",
+  "options": ["Option A", "Option B", "Option C", "Option D"],
+  "answer_index": 0,
+  "explanation": "Short explanation of the correct answer"
+}}]
+The answer_index must be a number from 0 to 3. Do not include Markdown or code fences.
 """
                     response = quiz_client.models.generate_content(
                         model="gemini-3.6-flash",
                         contents=quiz_prompt,
                     )
                     response_text = response.text.strip()
-
                     if response_text.startswith("```"):
-                        response_text = response_text.replace(
-                            "```json", "", 1
-                        )
-                        response_text = response_text.replace(
-                            "```", ""
-                        ).strip()
-
+                        response_text = response_text.replace("```json", "", 1).replace("```", "").strip()
                     generated_quiz = json.loads(response_text)
-                    if not isinstance(generated_quiz, list):
-                        raise ValueError("Quiz response was not a list.")
-                    if len(generated_quiz) != question_count:
-                        raise ValueError(
-                            "The AI returned the wrong number of questions."
-                        )
-
+                    if not isinstance(generated_quiz, list) or len(generated_quiz) != question_count:
+                        raise ValueError("Invalid quiz length")
                     for question in generated_quiz:
-                        if not isinstance(question, dict):
-                            raise ValueError("Invalid question format.")
-                        if not isinstance(
-                            question.get("question"), str
-                        ):
-                            raise ValueError("Invalid question text.")
                         if (
-                            not isinstance(question.get("options"), list)
-                            or len(question["options"]) != 4
+                                not isinstance(question, dict)
+                                or not isinstance(question.get("question"), str)
+                                or not isinstance(question.get("options"), list)
+                                or len(question["options"]) != 4
+                                or question.get("answer_index") not in [0, 1, 2, 3]
                         ):
-                            raise ValueError(
-                                "Each question must have four options."
-                            )
-                        if question.get("answer_index") not in [0, 1, 2, 3]:
-                            raise ValueError("Invalid correct-answer index.")
-
+                            raise ValueError("Invalid question format")
                     st.session_state.ai_quiz = generated_quiz
-                    st.session_state.ai_quiz_version = (
-                        st.session_state.get("ai_quiz_version", 0) + 1
-                    )
-                    st.success("Your AI quiz is ready!")
+                    st.session_state.ai_quiz_version = st.session_state.get("ai_quiz_version", 0) + 1
+                    st.session_state.quiz_checked = False
+                    st.success("Your personalized quiz is ready. Good luck!")
                 except Exception:
-                    st.error(
-                        "The AI could not create the quiz right now. "
-                        "Please try again with another topic."
-                    )
+                    st.error("The AI could not create the quiz right now. Please try again with another topic.")
 
     if "ai_quiz" in st.session_state:
         st.divider()
-        st.subheader("Your Quiz")
+        st.subheader("Your Challenge")
         quiz_version = st.session_state.get("ai_quiz_version", 0)
         selected_answers = []
-
+        total_questions = len(st.session_state.ai_quiz)
         for index, question in enumerate(st.session_state.ai_quiz):
+            st.progress((index + 1) / total_questions, text=f"Question {index + 1} of {total_questions}")
             selected_answer = st.radio(
-                f"{index + 1}. {question['question']}",
+                question["question"],
                 question["options"],
                 index=None,
                 key=f"ai_answer_{quiz_version}_{index}",
             )
             selected_answers.append(selected_answer)
-
-            if index < len(st.session_state.ai_quiz) - 1:
+            if index < total_questions - 1:
                 st.divider()
 
-        if st.button("Check My Answers", key="check_ai_quiz"):
-            unanswered_questions = [
-                index + 1
-                for index, answer in enumerate(selected_answers)
-                if answer is None
-            ]
-
-            if unanswered_questions:
-                missing = ", ".join(
-                    str(number) for number in unanswered_questions
-                )
-                st.warning(
-                    f"Please answer question(s) {missing} before checking your quiz."
-                )
+        if st.button("✅ Check My Answers", key="check_ai_quiz", use_container_width=True):
+            unanswered = [str(index + 1) for index, answer in enumerate(selected_answers) if answer is None]
+            if unanswered:
+                st.warning(f"Please answer question(s) {', '.join(unanswered)} before checking your quiz.")
             else:
-                score = 0
-                for index, question in enumerate(st.session_state.ai_quiz):
-                    correct_answer = question["options"][
-                        question["answer_index"]
-                    ]
-                    if selected_answers[index] == correct_answer:
-                        score += 1
-
-                st.subheader(
-                    f"Your Score: {score}/{len(st.session_state.ai_quiz)}"
+                score = sum(
+                    selected_answers[index] == question["options"][question["answer_index"]]
+                    for index, question in enumerate(st.session_state.ai_quiz)
                 )
+                st.session_state.quiz_checked = True
+                st.session_state.quiz_score = score
+                st.rerun()
 
-                for index, question in enumerate(st.session_state.ai_quiz):
-                    correct_answer = question["options"][
-                        question["answer_index"]
-                    ]
-                    if selected_answers[index] == correct_answer:
-                        st.success(f"✅ Question {index + 1}: Correct!")
-                    else:
-                        st.error(
-                            f"❌ Question {index + 1}: Incorrect. "
-                            f"Correct answer: **{correct_answer}**"
-                        )
+        if st.session_state.get("quiz_checked"):
+            score = st.session_state.quiz_score
+            percentage = round(score / total_questions * 100)
+            st.divider()
+            st.subheader(f"Final Score: {score}/{total_questions} ({percentage}%)")
+            if score == total_questions:
+                st.balloons()
+                st.success("Perfect score! Outstanding work.")
+            elif percentage >= 70:
+                st.success("Great result! You have a strong grasp of the topic.")
+            else:
+                st.info("Good attempt. Review the explanations below and try another quiz.")
 
-                    explanation = question.get("explanation", "")
-                    if explanation:
-                        st.caption(f"Explanation: {explanation}")
-
-                if score == len(st.session_state.ai_quiz):
-                    st.balloons()
-                    st.success("Perfect score!")
+            st.subheader("Answer Review")
+            for index, question in enumerate(st.session_state.ai_quiz):
+                correct_answer = question["options"][question["answer_index"]]
+                chosen = st.session_state.get(f"ai_answer_{quiz_version}_{index}")
+                if chosen == correct_answer:
+                    st.success(f"✅ Question {index + 1}: Correct")
+                else:
+                    st.error(f"❌ Question {index + 1}: Incorrect — correct answer: **{correct_answer}**")
+                if question.get("explanation"):
+                    st.caption(f"Explanation: {question['explanation']}")
 
 
 elif selected_page == "feedback":
@@ -780,7 +793,7 @@ elif selected_page == "radars":
             "ScatterplotLayer",
             map_df,
             get_position=["lon", "lat"],
-            get_color=[255, 75, 75, 200],
+            get_color=[249, 115, 22, 220],
             get_radius=90000,
             pickable=True,
         )
@@ -792,10 +805,10 @@ elif selected_page == "radars":
         tooltip_style = {
             "html": "<b>{name}</b><br/>ℹ️ {details}",
             "style": {
-                "backgroundColor": "#1a1a1a",
+                "backgroundColor": "#102a43",
                 "color": "white",
                 "borderRadius": "5px",
-                "border": "1px solid #FF4B4B",
+                "border": "1px solid #f97316",
             },
         }
         st.pydeck_chart(
@@ -806,7 +819,6 @@ elif selected_page == "radars":
             ),
             use_container_width=True,
         )
-
 
 st.divider()
 with st.expander("👤 About the Creator / Portal", expanded=False):
