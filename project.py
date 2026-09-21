@@ -264,7 +264,7 @@ def generate_daily_briefing(article_payload):
                 "Do not use Markdown headings.\n\n" + source_text
         )
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.6-flash",
             contents=prompt,
         )
         return response.text.strip()
@@ -459,10 +459,26 @@ elif selected_page == "chatbot":
                         "history clearly, accurately, and engagingly. "
                         f"User question: {user_query}"
                     )
-                    response = client.models.generate_content(
-                        model="gemini-2.5-flash",
-                        contents=prompt,
-                    )
+
+                    response = None
+                    last_error = None
+                    for attempt in range(3):
+                        try:
+                            response = client.models.generate_content(
+                                model="gemini-3.6-flash",
+                                contents=prompt,
+                            )
+                            break
+                        except Exception as retry_error:
+                            last_error = retry_error
+                            if "503" in str(retry_error) or "UNAVAILABLE" in str(retry_error):
+                                time.sleep(2 * (attempt + 1))
+                            else:
+                                raise
+
+                    if response is None:
+                        raise last_error
+
                     st.subheader("Strategic Intelligence Report")
                     st.write(response.text)
                 except Exception as e:
@@ -644,7 +660,7 @@ Return ONLY valid JSON in this exact format:
 The answer_index must be a number from 0 to 3. Do not include Markdown or code fences.
 """
                     response = quiz_client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-3.6-flash",
                         contents=quiz_prompt,
                     )
                     response_text = response.text.strip()
@@ -666,8 +682,8 @@ The answer_index must be a number from 0 to 3. Do not include Markdown or code f
                     st.session_state.ai_quiz_version = st.session_state.get("ai_quiz_version", 0) + 1
                     st.session_state.quiz_checked = False
                     st.success("Your personalized quiz is ready. Good luck!")
-                except Exception:
-                    st.error("The AI could not create the quiz right now. Please try again with another topic.")
+                except Exception as e:
+                    st.error(f"DEBUG: {e}")
 
     if "ai_quiz" in st.session_state:
         st.divider()
