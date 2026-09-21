@@ -247,7 +247,6 @@ def load_news_from_rss():
 
 @st.cache_data(ttl=21600, show_spinner=False)
 def generate_daily_briefing(article_payload):
-    """Create one cached briefing from the latest RSS headlines and summaries."""
     if not article_payload:
         return "There is not enough recent news to prepare a briefing right now."
 
@@ -265,7 +264,7 @@ def generate_daily_briefing(article_payload):
                 "Do not use Markdown headings.\n\n" + source_text
         )
         response = client.models.generate_content(
-            model="gemini-3.6-flash",
+            model="gemini-2.5-flash",
             contents=prompt,
         )
         return response.text.strip()
@@ -305,7 +304,7 @@ PAGE_LABELS = {
     "news": "🏠 Global News Feed",
     "chatbot": "🤖 AI Chatbot",
     "history": "📜 History Mini Games",
-    "quiz": "🏆 AI Generated Quiz",
+    "quiz": "🏆 Quiz",
     "feedback": "💬 Feedback",
     "radars": "✈️ Aviation Radars",
 }
@@ -461,7 +460,7 @@ elif selected_page == "chatbot":
                         f"User question: {user_query}"
                     )
                     response = client.models.generate_content(
-                        model="gemini-3.6-flash",
+                        model="gemini-2.5-flash",
                         contents=prompt,
                     )
                     st.subheader("Strategic Intelligence Report")
@@ -645,7 +644,7 @@ Return ONLY valid JSON in this exact format:
 The answer_index must be a number from 0 to 3. Do not include Markdown or code fences.
 """
                     response = quiz_client.models.generate_content(
-                        model="gemini-3.6-flash",
+                        model="gemini-2.5-flash",
                         contents=quiz_prompt,
                     )
                     response_text = response.text.strip()
