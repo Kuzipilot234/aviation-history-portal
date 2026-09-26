@@ -448,7 +448,7 @@ elif selected_page == "chatbot":
         key="chat_query",
     )
 
-    if st.button("Get an answer", key="chat_button_unique"):
+        if st.button("Get an answer", key="chat_button_unique"):
         seconds_since_last = time.time() - st.session_state.last_chat_time
         if seconds_since_last < COOLDOWN_SECONDS:
             wait_time = round(COOLDOWN_SECONDS - seconds_since_last)
@@ -459,7 +459,7 @@ elif selected_page == "chatbot":
             st.session_state.last_chat_time = time.time()
             with st.spinner("Preparing an answer..."):
                 try:
-                                        client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+                    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
                     prompt = (
                         "You are the AI assistant for Kuzey's Aviation and "
                         "History Portal. Answer questions about aviation and "
@@ -475,15 +475,9 @@ elif selected_page == "chatbot":
                     st.subheader("Strategic Intelligence Report")
                     st.write(response.choices[0].message.content)
                 except Exception as e:
-                    if "503" in str(e) or "UNAVAILABLE" in str(e):
-                        st.warning(
-                            "The AI service is experiencing high demand right now. "
-                            "Please try again in a few minutes."
-                        )
-                    else:
-                        st.error(
-                            "The chatbot could not connect right now. Please try again later."
-                        )
+                    st.error(
+                        "The chatbot could not connect right now. Please try again later."
+                    )
 
 
 elif selected_page == "history":
