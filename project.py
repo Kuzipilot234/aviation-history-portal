@@ -282,7 +282,7 @@ def display_news_section(section_title, articles, empty_message):
         st.info(empty_message)
         return
 
-        news_columns = st.columns(3)
+    news_columns = st.columns(3)
     for index, article in enumerate(articles):
         with news_columns[index % 3]:
             st.markdown(f"##### {article['title']}")
@@ -305,7 +305,6 @@ def display_news_section(section_title, articles, empty_message):
                     "Read original article",
                     article["url"],
                 )
-
 
 rss_articles = load_news_from_rss()
 
