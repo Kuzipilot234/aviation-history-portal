@@ -431,7 +431,6 @@ if selected_page == "news":
         "No history news is available right now.",
     )
 
-
 elif selected_page == "chatbot":
     st.header("🤖 Kuzey's Aviation & History Portal AI Chatbot")
     st.markdown(
@@ -448,7 +447,7 @@ elif selected_page == "chatbot":
         key="chat_query",
     )
 
-        if st.button("Get an answer", key="chat_button_unique"):
+    if st.button("Get an answer", key="chat_button_unique"):
         seconds_since_last = time.time() - st.session_state.last_chat_time
         if seconds_since_last < COOLDOWN_SECONDS:
             wait_time = round(COOLDOWN_SECONDS - seconds_since_last)
@@ -472,14 +471,13 @@ elif selected_page == "chatbot":
                         messages=[{"role": "user", "content": prompt}],
                     )
 
-                    st.subheader("Strategic Intelligence Report")
+                    st.subheader("Strategic Intelligence Report"
                     st.write(response.choices[0].message.content)
                 except Exception as e:
                     st.error(
-                        "The chatbot could not connect right now. Please try again later."
+                        "The chatbot could not connect right now, please try again later"
                     )
-
-
+                        
 elif selected_page == "history":
     st.header("📜 Interactive Chronology & Strategy Games")
 
