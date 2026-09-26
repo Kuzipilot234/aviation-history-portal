@@ -282,10 +282,10 @@ def display_news_section(section_title, articles, empty_message):
         st.info(empty_message)
         return
 
-    news_columns = st.columns(3)
+        news_columns = st.columns(3)
     for index, article in enumerate(articles):
         with news_columns[index % 3]:
-                        st.markdown(f"##### {article['title']}")
+            st.markdown(f"##### {article['title']}")
             st.caption(
                 f"{article['category']} · {article['published']}"
             )
