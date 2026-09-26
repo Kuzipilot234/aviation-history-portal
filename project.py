@@ -245,13 +245,12 @@ def load_news_from_rss():
 
     return articles
 
-
 @st.cache_data(ttl=21600, show_spinner=False)
 def generate_daily_briefing(article_payload):
     if not article_payload:
         return "There is not enough recent news to prepare a briefing right now."
 
-        try:
+    try:
         client = Groq(api_key=st.secrets["GROQ_API_KEY"])
         source_text = "\n".join(
             f"[{item['category']}] {item['title']}: {item['summary']}"
