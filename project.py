@@ -474,9 +474,7 @@ elif selected_page == "chatbot":
                     st.subheader("Strategic Intelligence Report")
                     st.write(response.choices[0].message.content)
                 except Exception as e:
-                    st.error(
-                        "The chatbot could not connect right now, please try again later"
-                    )
+                    st.error(f"DEBUG: {e}")
                         
 elif selected_page == "history":
     st.header("📜 Interactive Chronology & Strategy Games")
