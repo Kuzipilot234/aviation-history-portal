@@ -571,8 +571,6 @@ elif selected_page == "history":
     if st.button("🔄 Next Target / Figure", key="game_reset"):
         del st.session_state.secret_figure
         st.rerun()
-
-
 elif selected_page == "quiz":
     st.header("🏆 AI-Generated Knowledge Quiz")
     st.markdown(
@@ -603,123 +601,7 @@ elif selected_page == "quiz":
         )
     with preview_col:
         st.info(
-            f"Your quiz will contain **{question_count} questions** at "
-            f"**{difficulty.lower()}** difficulty.\n\n"
-            "Answer every question, then select **Check My Answers** to see "
-            "the results."
-        )
-
-    if "last_quiz_time" not in st.session_state:
-        st.session_state.last_quiz_time = 0
-
-    QUIZ_COOLDOWN_SECONDS = 20
-    if st.button("✨ Generate New Quiz", key="generate_ai_quiz", use_container_width=True):
-        seconds_since_last = time.time() - st.session_state.last_quiz_time
-        topic = quiz_topic.strip()
-
-        if seconds_since_last < QUIZ_COOLDOWN_SECONDS:
-            wait_time = round(QUIZ_COOLDOWN_SECONDS - seconds_since_last)
-            st.warning(f"Please wait {wait_time} more second(s) before generating another quiz.")
-        elif not topic:
-            st.warning("Please enter a quiz topic first.")
-        else:
-            st.session_state.last_quiz_time = time.time()
-            with st.spinner("Creating your personalized quiz..."):
-                try:
-                    quiz_client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-                    quiz_prompt = f"""
-Create a {difficulty.lower()} multiple-choice quiz about: {topic}
-
-Create exactly {question_count} questions. Each question must have exactly four answer options and only one correct answer.
-Return ONLY valid JSON in this exact format:
-[{{
-  "question": "Question text",
-  "options": ["Option A", "Option B", "Option C", "Option D"],
-  "answer_index": 0,
-  "explanation": "Short explanation of the correct answer"
-}}]
-The answer_index must be a number from 0 to 3. Do not include Markdown or code fences.
-"""
-                    response = quiz_client.models.generate_content(
-                        model="gemini-3.6-flash",
-                        contents=quiz_prompt,
-                    )
-                    response_text = response.text.strip()
-                    if response_text.startswith("```"):
-                        response_text = response_text.replace("```json", "", 1).replace("```", "").strip()
-                    generated_quiz = json.loads(response_text)
-                    if not isinstance(generated_quiz, list) or len(generated_quiz) != question_count:
-                        raise ValueError("Invalid quiz length")
-                    for question in generated_quiz:
-                        if (
-                                not isinstance(question, dict)
-                                or not isinstance(question.get("question"), str)
-                                or not isinstance(question.get("options"), list)
-                                or len(question["options"]) != 4
-                                or question.get("answer_index") not in [0, 1, 2, 3]
-                        ):
-                            raise ValueError("Invalid question format")
-                    st.session_state.ai_quiz = generated_quiz
-                    st.session_state.ai_quiz_version = st.session_state.get("ai_quiz_version", 0) + 1
-                    st.session_state.quiz_checked = False
-                    st.success("Your personalized quiz is ready. Good luck!")
-                except Exception as e:
-                    st.error(f"DEBUG: {e}")
-
-    if "ai_quiz" in st.session_state:
-        st.divider()
-        st.subheader("Your Challenge")
-        quiz_version = st.session_state.get("ai_quiz_version", 0)
-        selected_answers = []
-        total_questions = len(st.session_state.ai_quiz)
-        for index, question in enumerate(st.session_state.ai_quiz):
-            st.progress((index + 1) / total_questions, text=f"Question {index + 1} of {total_questions}")
-            selected_answer = st.radio(
-                question["question"],
-                question["options"],
-                index=None,
-                key=f"ai_answer_{quiz_version}_{index}",
-            )
-            selected_answers.append(selected_answer)
-            if index < total_questions - 1:
-                st.divider()
-
-        if st.button("✅ Check My Answers", key="check_ai_quiz", use_container_width=True):
-            unanswered = [str(index + 1) for index, answer in enumerate(selected_answers) if answer is None]
-            if unanswered:
-                st.warning(f"Please answer question(s) {', '.join(unanswered)} before checking your quiz.")
-            else:
-                score = sum(
-                    selected_answers[index] == question["options"][question["answer_index"]]
-                    for index, question in enumerate(st.session_state.ai_quiz)
-                )
-                st.session_state.quiz_checked = True
-                st.session_state.quiz_score = score
-                st.rerun()
-
-        if st.session_state.get("quiz_checked"):
-            score = st.session_state.quiz_score
-            percentage = round(score / total_questions * 100)
-            st.divider()
-            st.subheader(f"Final Score: {score}/{total_questions} ({percentage}%)")
-            if score == total_questions:
-                st.balloons()
-                st.success("Perfect score! Outstanding work.")
-            elif percentage >= 70:
-                st.success("Great result! You have a strong grasp of the topic.")
-            else:
-                st.info("Good attempt. Review the explanations below and try another quiz.")
-
-            st.subheader("Answer Review")
-            for index, question in enumerate(st.session_state.ai_quiz):
-                correct_answer = question["options"][question["answer_index"]]
-                chosen = st.session_state.get(f"ai_answer_{quiz_version}_{index}")
-                if chosen == correct_answer:
-                    st.success(f"✅ Question {index + 1}: Correct")
-                else:
-                    st.error(f"❌ Question {index + 1}: Incorrect — correct answer: **{correct_answer}**")
-                if question.get("explanation"):
-                    st.caption(f"Explanation: {question['explanation']}")
+            f"Your quiz will contain **{question_count}
 
 
 elif selected_page == "feedback":
