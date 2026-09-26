@@ -213,7 +213,7 @@ ANNOUNCEMENTS = [
         "date": "September 26, 2026",
         "title": "!!Important Announcement!!",
         "message": (
-            "If you get too much AI unavailable errors, that is because the AI that this website uses gets high demand. Sorry for the inconvenience."
+            "The issue is now fixed. You can use the AI features freely!"
         ),
     },
 ]
