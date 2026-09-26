@@ -471,7 +471,7 @@ elif selected_page == "chatbot":
                         messages=[{"role": "user", "content": prompt}],
                     )
 
-                    st.subheader("Strategic Intelligence Report"
+                    st.subheader("Strategic Intelligence Report")
                     st.write(response.choices[0].message.content)
                 except Exception as e:
                     st.error(
