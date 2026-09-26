@@ -285,11 +285,20 @@ def display_news_section(section_title, articles, empty_message):
     news_columns = st.columns(3)
     for index, article in enumerate(articles):
         with news_columns[index % 3]:
-            st.markdown(f"##### {article['title']}")
+                        st.markdown(f"##### {article['title']}")
             st.caption(
                 f"{article['category']} · {article['published']}"
             )
-            st.write(article["summary"])
+
+            summary_text = article["summary"]
+            preview_length = 150
+            if len(summary_text) > preview_length:
+                preview_text = summary_text[:preview_length].rsplit(" ", 1)[0] + "..."
+                st.write(preview_text)
+                with st.expander("Show more"):
+                    st.write(summary_text)
+            else:
+                st.write(summary_text)
 
             if article["url"]:
                 st.link_button(
