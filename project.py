@@ -10,6 +10,7 @@ import pydeck as pdk
 import streamlit as st
 import streamlit.components.v1 as components
 from google import genai
+from groq import groq
 from PIL import Image
 
 st.set_page_config(
@@ -458,9 +459,7 @@ elif selected_page == "chatbot":
             st.session_state.last_chat_time = time.time()
             with st.spinner("Preparing an answer..."):
                 try:
-                    client = genai.Client(
-                        api_key=st.secrets["GEMINI_API_KEY"]
-                    )
+                                        client = Groq(api_key=st.secrets["GROQ_API_KEY"])
                     prompt = (
                         "You are the AI assistant for Kuzey's Aviation and "
                         "History Portal. Answer questions about aviation and "
@@ -468,27 +467,13 @@ elif selected_page == "chatbot":
                         f"User question: {user_query}"
                     )
 
-                    response = None
-                    last_error = None
-                    for attempt in range(3):
-                        try:
-                            response = client.models.generate_content(
-                                model="gemini-3.6-flash",
-                                contents=prompt,
-                            )
-                            break
-                        except Exception as retry_error:
-                            last_error = retry_error
-                            if "503" in str(retry_error) or "UNAVAILABLE" in str(retry_error):
-                                time.sleep(2 * (attempt + 1))
-                            else:
-                                raise
-
-                    if response is None:
-                        raise last_error
+                    response = client.chat.completions.create(
+                        model="llama-3.3-70b-versatile",
+                        messages=[{"role": "user", "content": prompt}],
+                    )
 
                     st.subheader("Strategic Intelligence Report")
-                    st.write(response.text)
+                    st.write(response.choices[0].message.content)
                 except Exception as e:
                     if "503" in str(e) or "UNAVAILABLE" in str(e):
                         st.warning(
