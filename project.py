@@ -10,7 +10,7 @@ import pydeck as pdk
 import streamlit as st
 import streamlit.components.v1 as components
 from google import genai
-from groq import groq
+from groq import Groq
 from PIL import Image
 
 st.set_page_config(
