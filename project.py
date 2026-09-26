@@ -209,10 +209,10 @@ ANNOUNCEMENTS = [
         ),
     },
     {
-        "date": "September 18, 2026",
-        "title": "Updated AI generated quiz",
+        "date": "September 26, 2026",
+        "title": "!!Important Announcement!!",
         "message": (
-            "You can now select your quiz's difficulty"
+            "If you get too much AI unavailable errors, that is because the AI that this website uses gets high demand. Sorry for the inconvenience."
         ),
     },
 ]
