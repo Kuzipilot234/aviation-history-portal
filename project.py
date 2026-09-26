@@ -251,8 +251,8 @@ def generate_daily_briefing(article_payload):
     if not article_payload:
         return "There is not enough recent news to prepare a briefing right now."
 
-    try:
-        client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+        try:
+        client = Groq(api_key=st.secrets["GROQ_API_KEY"])
         source_text = "\n".join(
             f"[{item['category']}] {item['title']}: {item['summary']}"
             for item in article_payload[:12]
@@ -264,17 +264,16 @@ def generate_daily_briefing(article_payload):
                 "information supplied below. Do not invent facts, dates, or events. "
                 "Do not use Markdown headings.\n\n" + source_text
         )
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt,
+        response = client.chat.completions.create(
+            model="openai/gpt-oss-120b",
+            messages=[{"role": "user", "content": prompt}],
         )
-        return response.text.strip()
+        return response.choices[0].message.content.strip()
     except Exception:
         return (
             "The AI daily briefing is temporarily unavailable. You can still "
             "browse the latest aviation and history stories below."
         )
-
 
 def display_news_section(section_title, articles, empty_message):
     st.markdown(f"### {section_title}")
