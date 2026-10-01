@@ -1,7 +1,6 @@
-﻿streamlit==1.63.0
+streamlit==1.63.0
 pandas==3.0.5
 pydeck==0.9.3
 feedparser==6.0.14
-pillow
 groq
-
+pillow

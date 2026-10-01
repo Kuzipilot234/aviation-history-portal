@@ -244,34 +244,37 @@ def load_news_from_rss():
 
     return articles
 
+
 @st.cache_data(ttl=21600, show_spinner=False)
 def generate_daily_briefing(article_payload):
     if not article_payload:
         return "There is not enough recent news to prepare a briefing right now."
 
-    try:
-        client = Groq(api_key=st.secrets["GROQ_API_KEY"])
-        source_text = "\n".join(
-            f"[{item['category']}] {item['title']}: {item['summary']}"
-            for item in article_payload[:12]
-        )
-        prompt = (
-                "You are the editor of Kuzey's Aviation and History Portal. "
-                "Write a concise daily briefing in 3 short paragraphs: one aviation "
-                "update, one history update, and one overall takeaway. Use only the "
-                "information supplied below. Do not invent facts, dates, or events. "
-                "Do not use Markdown headings.\n\n" + source_text
-        )
-        response = client.chat.completions.create(
-            model="openai/gpt-oss-120b",
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return response.choices[0].message.content.strip()
-    except Exception:
-        return (
-            "The AI daily briefing is temporarily unavailable. You can still "
-            "browse the latest aviation and history stories below."
-        )
+    # Errors are not caught here so that a failed request is never cached.
+    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+    # Take up to 6 stories from each category so both get covered.
+    selected_items = [
+        item for item in article_payload if item["category"] == "Aviation"
+    ][:6] + [
+        item for item in article_payload if item["category"] == "History"
+    ][:6]
+    source_text = "\n".join(
+        f"[{item['category']}] {item['title']}: {item['summary']}"
+        for item in selected_items
+    )
+    prompt = (
+            "You are the editor of Kuzey's Aviation and History Portal. "
+            "Write a concise daily briefing in 3 short paragraphs: one aviation "
+            "update, one history update, and one overall takeaway. Use only the "
+            "information supplied below. Do not invent facts, dates, or events. "
+            "Do not use Markdown headings.\n\n" + source_text
+    )
+    response = client.chat.completions.create(
+        model="openai/gpt-oss-120b",
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return response.choices[0].message.content.strip()
+
 
 def display_news_section(section_title, articles, empty_message):
     st.markdown(f"### {section_title}")
@@ -303,6 +306,7 @@ def display_news_section(section_title, articles, empty_message):
                     "Read original article",
                     article["url"],
                 )
+
 
 rss_articles = load_news_from_rss()
 
@@ -403,7 +407,13 @@ if selected_page == "news":
         for article in rss_articles
     )
     with st.container(border=True):
-        st.write(generate_daily_briefing(briefing_payload))
+        try:
+            st.write(generate_daily_briefing(briefing_payload))
+        except Exception:
+            st.write(
+                "The AI daily briefing is temporarily unavailable. You can still "
+                "browse the latest aviation and history stories below."
+            )
 
     aviation_articles = [
         article
@@ -472,7 +482,7 @@ elif selected_page == "chatbot":
                     st.write(response.choices[0].message.content)
                 except Exception as e:
                     st.error(f"DEBUG: {e}")
-                        
+
 elif selected_page == "history":
     st.header("📜 Interactive Chronology & Strategy Games")
 
