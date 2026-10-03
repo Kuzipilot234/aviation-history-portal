@@ -1,0 +1,12 @@
+{% load i18n %}<h3>{{ title|default:_("Untitled") }}</h3>
+{% if not summary %}
+  <p>{% translate "No summary available." %}</p>
+{% elif preview and preview != summary %}
+  <p class="preview">{{ preview }}</p>
+  <details>
+    <summary>{% translate "Show more" %}</summary>
+    <p>{{ summary }}</p>
+  </details>
+{% else %}
+  <p>{{ summary }}</p>
+{% endif %}

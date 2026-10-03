@@ -1,12 +1,13 @@
 {% extends "core/base.html" %}
+{% load i18n %}
 
-{% block title %}History Games · Kuzey's Aviation and History Portal{% endblock %}
+{% block title %}{% translate "History Games" %} · {{ block.super }}{% endblock %}
 
 {% block content %}
 <header class="page-head">
-  <span class="eyebrow">Interactive chronology &amp; strategy games</span>
-  <h1>History Games</h1>
-  <p>Travel through the key years of the Second World War, then test yourself on famous figures from history.</p>
+  <span class="eyebrow">{% translate "Interactive chronology & strategy games" %}</span>
+  <h1>{% translate "History Games" %}</h1>
+  <p>{% translate "Travel through the key years of the Second World War, then test yourself on famous figures from history." %}</p>
 </header>
 
 <div class="games-grid">
@@ -14,7 +15,7 @@
     <div class="card-header">
       <div>
         <span class="eyebrow">1939 – 1945</span>
-        <h2 id="timeline-title">World War II Timeline</h2>
+        <h2 id="timeline-title">{% translate "World War II Timeline" %}</h2>
       </div>
     </div>
     <div id="timeline">{% include "games/_timeline.html" %}</div>
@@ -23,8 +24,8 @@
   <section class="card" aria-labelledby="who-title">
     <div class="card-header">
       <div>
-        <span class="eyebrow">Three clues · one answer</span>
-        <h2 id="who-title">Who Am I?</h2>
+        <span class="eyebrow">{% translate "Three clues · one answer" %}</span>
+        <h2 id="who-title">{% translate "Who Am I?" %}</h2>
       </div>
     </div>
     <div id="who-am-i">{% include "games/_who_am_i.html" %}</div>

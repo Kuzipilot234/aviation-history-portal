@@ -1,6 +1,7 @@
 {% extends "core/base.html" %}
+{% load i18n %}
 
-{% block title %}Radars · Kuzey's Aviation and History Portal{% endblock %}
+{% block title %}{% translate "Radars" %} · {{ block.super }}{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -9,27 +10,27 @@
 
 {% block content %}
 <header class="page-head">
-  <span class="eyebrow">Live flights &amp; radars</span>
-  <h1>Radars</h1>
-  <p>Aircraft flying over Türkiye right now, live weather and wind conditions, and a map of famous airports and air bases.</p>
+  <span class="eyebrow">{% translate "Live flights & radars" %}</span>
+  <h1>{% translate "Radars" %}</h1>
+  <p>{% translate "Aircraft flying over Türkiye right now, live weather and wind conditions, and a map of famous airports and air bases." %}</p>
 </header>
 
 <section class="card map-card" aria-labelledby="flights-title">
   <div class="card-header">
     <div>
-      <span class="eyebrow">Source · adsb.lol</span>
-      <h2 id="flights-title">Live Flight Tracker</h2>
+      <span class="eyebrow">{% translate "Source" %} · adsb.lol</span>
+      <h2 id="flights-title">{% translate "Live Flight Tracker" %}</h2>
     </div>
-    <span class="chip live" id="flight-status">Loading</span>
+    <span class="chip live" id="flight-status">{% translate "Loading" %}</span>
   </div>
-  <div class="map tall" id="flight-map" role="region" aria-label="Map of aircraft over Türkiye"></div>
+  <div class="map tall" id="flight-map" role="region" aria-label="{% translate 'Map of aircraft over Türkiye' %}"></div>
   <div class="map-footer">
     <div class="flight-stats">
-      <div><strong id="stat-count">–</strong><span>Aircraft in the air</span></div>
-      <div><strong id="stat-highest">–</strong><span>Highest flight</span></div>
-      <div><strong id="stat-fastest">–</strong><span>Fastest flight</span></div>
+      <div><strong id="stat-count">–</strong><span>{% translate "Aircraft in the air" %}</span></div>
+      <div><strong id="stat-highest">–</strong><span>{% translate "Highest flight" %}</span></div>
+      <div><strong id="stat-fastest">–</strong><span>{% translate "Fastest flight" %}</span></div>
     </div>
-    <span id="flight-updated">Positions refresh every minute. Click a plane for details.</span>
+    <span id="flight-updated">{% translate "Positions refresh every minute. Click a plane for details." %}</span>
   </div>
 </section>
 
@@ -37,22 +38,22 @@
   <section class="card map-card" aria-labelledby="weather-title">
     <div class="card-header">
       <div>
-        <span class="eyebrow">Source · Ventusky</span>
-        <h2 id="weather-title">Weather &amp; Wind</h2>
+        <span class="eyebrow">{% translate "Source" %} · Ventusky</span>
+        <h2 id="weather-title">{% translate "Weather & Wind" %}</h2>
       </div>
     </div>
-    <iframe src="https://www.ventusky.com/" title="Ventusky weather radar" loading="lazy"></iframe>
+    <iframe src="https://www.ventusky.com/" title="{% translate 'Ventusky weather radar' %}" loading="lazy"></iframe>
   </section>
 
   <section class="card map-card" aria-labelledby="atlas-title">
     <div class="card-header">
       <div>
-        <span class="eyebrow">{{ map_points|length }} locations</span>
-        <h2 id="atlas-title">Aviation Atlas</h2>
+        <span class="eyebrow">{% blocktranslate count counter=map_points|length %}{{ counter }} location{% plural %}{{ counter }} locations{% endblocktranslate %}</span>
+        <h2 id="atlas-title">{% translate "Aviation Atlas" %}</h2>
       </div>
     </div>
-    <div class="map" id="atlas" role="region" aria-label="Map of airports and air bases"></div>
-    <div class="atlas-list" aria-label="Jump to a location">
+    <div class="map" id="atlas" role="region" aria-label="{% translate 'Map of airports and air bases' %}"></div>
+    <div class="atlas-list" aria-label="{% translate 'Jump to a location' %}">
       {% for point in map_points %}
         <button type="button" data-point="{{ forloop.counter0 }}">{{ point.name }}</button>
       {% endfor %}
@@ -61,6 +62,7 @@
 </div>
 {{ map_points|json_script:"map-points" }}
 {{ flight_area_center|json_script:"flight-center" }}
+{{ flight_labels|json_script:"flight-labels" }}
 {% endblock %}
 
 {% block scripts %}
@@ -96,7 +98,9 @@
     const flightMap = baseMap("flight-map", center, 6);
     const planes = L.layerGroup().addTo(flightMap);
     const status = document.getElementById("flight-status");
-    const fmt = new Intl.NumberFormat("en-US");
+    const T = JSON.parse(document.getElementById("flight-labels").textContent);
+    const fmt = new Intl.NumberFormat(document.documentElement.lang);
+    const fill = (text, values) => text.replace(/\{(\w+)\}/g, (_, key) => values[key]);
 
     function planeIcon(heading) {
       return L.divIcon({
@@ -120,11 +124,11 @@
         planes.clearLayers();
         data.aircraft.forEach(function (plane) {
           const lines = [
-            ["div", [plane.type, plane.registration].filter(Boolean).join(" · ") || "Aircraft", "popup-code"],
+            ["div", [plane.type, plane.registration].filter(Boolean).join(" · ") || T.aircraft, "popup-code"],
             ["strong", plane.callsign],
-            ["div", plane.altitude_ft != null ? "Altitude: " + fmt.format(plane.altitude_ft) + " ft" : "Altitude: unknown"],
-            ["div", plane.speed_kt != null ? "Speed: " + fmt.format(plane.speed_kt) + " kt" : "Speed: unknown"],
-            ["div", "Heading: " + plane.heading + "°"],
+            ["div", T.altitude + " " + (plane.altitude_ft != null ? fmt.format(plane.altitude_ft) + " ft" : T.unknown)],
+            ["div", T.speed + " " + (plane.speed_kt != null ? fmt.format(plane.speed_kt) + " kt" : T.unknown)],
+            ["div", T.heading + " " + plane.heading + "°"],
           ];
           L.marker([plane.lat, plane.lon], { icon: planeIcon(plane.heading), title: plane.callsign })
             .bindPopup(popupContent(lines))
@@ -139,19 +143,20 @@
         document.getElementById("stat-highest").textContent = highest ? fmt.format(highest.altitude_ft) + " ft" : "–";
         document.getElementById("stat-fastest").textContent = fastest ? fmt.format(fastest.speed_kt) + " kt" : "–";
 
-        const updated = data.updated ? new Date(data.updated * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : null;
+        const time = data.updated ? new Date(data.updated * 1000).toLocaleTimeString(document.documentElement.lang, { hour: "2-digit", minute: "2-digit" }) : null;
+        const note = document.getElementById("flight-updated");
         if (data.stale && !data.aircraft.length) {
-          setStatus("Unavailable", false);
-          document.getElementById("flight-updated").textContent = "Live data is unavailable right now. Please try again later.";
+          setStatus(T.unavailable, false);
+          note.textContent = T.unavailableNote;
         } else if (data.stale) {
-          setStatus("Paused", false);
-          document.getElementById("flight-updated").textContent = "Showing positions from " + updated + ". Live data will resume shortly.";
+          setStatus(T.paused, false);
+          note.textContent = fill(T.pausedNote, { time: time });
         } else {
-          setStatus("Live", true);
-          document.getElementById("flight-updated").textContent = "Updated " + updated + ". Click a plane for details.";
+          setStatus(T.live, true);
+          note.textContent = fill(T.liveNote, { time: time });
         }
       } catch (error) {
-        setStatus("Unavailable", false);
+        setStatus(T.unavailable, false);
       }
     }
 

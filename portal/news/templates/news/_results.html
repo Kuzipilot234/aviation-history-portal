@@ -1,40 +1,62 @@
-<div class="section">
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}<div class="section">
   <div class="results-meta">
     <span>
-      {{ articles|length }} stor{{ articles|length|pluralize:"y,ies" }}
-      {% if category != "All" %}in {{ category }}{% endif %}
-      {% if query %}matching “{{ query }}”{% endif %}
+      {% if query and category != "All" %}
+        {% blocktranslate trimmed count counter=articles|length with category=category_label %}
+          {{ counter }} story in {{ category }} matching “{{ query }}”
+        {% plural %}
+          {{ counter }} stories in {{ category }} matching “{{ query }}”
+        {% endblocktranslate %}
+      {% elif query %}
+        {% blocktranslate trimmed count counter=articles|length %}
+          {{ counter }} story matching “{{ query }}”
+        {% plural %}
+          {{ counter }} stories matching “{{ query }}”
+        {% endblocktranslate %}
+      {% elif category != "All" %}
+        {% blocktranslate trimmed count counter=articles|length with category=category_label %}
+          {{ counter }} story in {{ category }}
+        {% plural %}
+          {{ counter }} stories in {{ category }}
+        {% endblocktranslate %}
+      {% else %}
+        {% blocktranslate trimmed count counter=articles|length %}
+          {{ counter }} story
+        {% plural %}
+          {{ counter }} stories
+        {% endblocktranslate %}
+      {% endif %}
     </span>
   </div>
   {% if articles %}
     <div class="news-grid">
       {% for article in articles %}
-        <article class="card article">
+        <article class="card article" id="article-{{ article.id }}">
           <div class="article-meta">
-            <span class="chip {{ article.category|lower }}">{{ article.category }}</span>
-            <time>{{ article.published }}</time>
+            <span class="chip {{ article.category|lower }}">{% if article.category == "Aviation" %}{% translate "Aviation" %}{% else %}{% translate "History" %}{% endif %}</span>
+            <time>{% if article.published_at %}{{ article.published_at|date:"j M Y, H:i" }}{% else %}{{ article.published }}{% endif %}</time>
           </div>
-          <h3>
-            {% if article.url %}<a href="{{ article.url }}" target="_blank" rel="noopener">{{ article.title }}</a>{% else %}{{ article.title }}{% endif %}
-          </h3>
-          {% if article.preview != article.summary %}
-            <p class="preview">{{ article.preview }}</p>
-            <details>
-              <summary>Show more</summary>
-              <p>{{ article.summary }}</p>
-            </details>
-          {% else %}
-            <p>{{ article.summary }}</p>
-          {% endif %}
-          {% if article.url %}
-            <a class="link-arrow" href="{{ article.url }}" target="_blank" rel="noopener">Read article <span aria-hidden="true">↗</span></a>
-          {% endif %}
+          <div class="article-body">
+            {% include "news/_article_text.html" with title=article.title summary=article.summary preview=article.preview %}
+          </div>
+          <div class="article-actions">
+            {% if article.url %}
+              <a class="link-arrow" href="{{ article.url }}" target="_blank" rel="noopener">{% translate "Read article" %} <span aria-hidden="true">↗</span></a>
+            {% endif %}
+            {% if LANGUAGE_CODE != "en" %}
+              <button type="button" class="small ghost translate-button"
+                      hx-post="{% url 'news:translate' article.id %}" hx-target="#article-{{ article.id }} .article-body"
+                      hx-disabled-elt="this" hx-on::after-request="if (event.detail.successful) this.remove()">
+                {% translate "Translate" %} <span class="htmx-indicator">…</span>
+              </button>
+            {% endif %}
+          </div>
         </article>
       {% endfor %}
     </div>
   {% elif query %}
-    <div class="empty"><strong>No stories match “{{ query }}”.</strong><span>Try a different word, or switch the category to All.</span></div>
+    <div class="empty"><strong>{% blocktranslate %}No stories match “{{ query }}”.{% endblocktranslate %}</strong><span>{% translate "Try a different word, or switch the category to All." %}</span></div>
   {% else %}
-    <div class="empty"><strong>No news is available right now.</strong><span>The news sources may be busy. Please check back in a few minutes.</span></div>
+    <div class="empty"><strong>{% translate "No news is available right now." %}</strong><span>{% translate "The news sources may be busy. Please check back in a few minutes." %}</span></div>
   {% endif %}
 </div>

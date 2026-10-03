@@ -1,0 +1,914 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Kuzey's Aviation and History Portal\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: core/templates/core/radars.html
+msgid "%(counter)s location"
+msgid_plural "%(counter)s locations"
+msgstr[0] "%(counter)s lieu"
+msgstr[1] "%(counter)s lieux"
+
+#: news/templates/news/_results.html
+msgid "%(counter)s story"
+msgid_plural "%(counter)s stories"
+msgstr[0] "%(counter)s article"
+msgstr[1] "%(counter)s articles"
+
+#: news/templates/news/_results.html
+msgid "%(counter)s story in %(category)s"
+msgid_plural "%(counter)s stories in %(category)s"
+msgstr[0] "%(counter)s article dans %(category)s"
+msgstr[1] "%(counter)s articles dans %(category)s"
+
+#: news/templates/news/_results.html
+msgid "%(counter)s story in %(category)s matching “%(query)s”"
+msgid_plural "%(counter)s stories in %(category)s matching “%(query)s”"
+msgstr[0] "%(counter)s article dans %(category)s correspondant à « %(query)s »"
+msgstr[1] "%(counter)s articles dans %(category)s correspondant à « %(query)s »"
+
+#: news/templates/news/_results.html
+msgid "%(counter)s story matching “%(query)s”"
+msgid_plural "%(counter)s stories matching “%(query)s”"
+msgstr[0] "%(counter)s article correspondant à « %(query)s »"
+msgstr[1] "%(counter)s articles correspondant à « %(query)s »"
+
+#: core/services/content.py
+msgid "1945 - Total Victory"
+msgstr "1945 - Victoire totale"
+
+#: core/templates/core/home.html
+msgid "A World War II timeline and a \"Who Am I?\" guessing game."
+msgstr "Une chronologie de la Seconde Guerre mondiale et un jeu de devinettes « Qui suis-je ? »."
+
+#: core/services/content.py
+msgid "A fresh look, plus new features"
+msgstr "Un nouveau look et de nouvelles fonctionnalités"
+
+#: core/templates/core/home.html ai/templates/ai/chatbot.html
+msgid "AI Chatbot"
+msgstr "Chatbot IA"
+
+#: ai/templates/ai/chatbot.html
+msgid "AI chatbot"
+msgstr "Chatbot IA"
+
+#: core/services/content.py
+msgid "AI daily news briefing"
+msgstr "Résumé quotidien de l'actualité par l'IA"
+
+#: core/services/content.py
+msgid "AI features are working again"
+msgstr "Les fonctionnalités d'IA fonctionnent à nouveau"
+
+#: ai/templates/ai/quiz.html
+msgid "AI-generated knowledge quiz"
+msgstr "Quiz de connaissances généré par l'IA"
+
+#: core/services/content.py
+msgid "Aerospace test center where the sound barrier was broken."
+msgstr "Centre d'essais aérospatiaux où le mur du son a été franchi."
+
+#: core/views.py
+msgid "Aircraft"
+msgstr "Aéronef"
+
+#: core/templates/core/radars.html
+msgid "Aircraft flying over Türkiye right now, live weather and wind conditions, and a map of famous airports and air bases."
+msgstr "Les avions qui survolent la Turquie en ce moment, la météo et le vent en direct, et une carte des aéroports et bases aériennes célèbres."
+
+#: core/templates/core/home.html
+msgid "Aircraft flying over Türkiye right now, live weather, and an airbase atlas."
+msgstr "Les avions qui survolent la Turquie en ce moment, la météo en direct et un atlas des bases aériennes."
+
+#: core/templates/core/radars.html
+msgid "Aircraft in the air"
+msgstr "Avions en vol"
+
+#: core/templates/core/home.html news/views.py
+msgid "All"
+msgstr "Tout"
+
+#: core/services/content.py
+msgid "Allied troops make a dramatic escape from Dunkirk beaches."
+msgstr "Les troupes alliées s'échappent de façon spectaculaire des plages de Dunkerque."
+
+#: core/views.py
+msgid "Altitude:"
+msgstr "Altitude :"
+
+#: core/templates/core/home.html
+msgid "An AI-generated quiz on any topic, at the difficulty you choose."
+msgstr "Un quiz généré par l'IA sur le sujet de votre choix, au niveau de difficulté choisi."
+
+#: core/templates/core/home.html
+msgid "Announcements"
+msgstr "Annonces"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Answer Review"
+msgstr "Correction"
+
+#: ai/templates/ai/quiz.html
+msgid "Answer every question, then select Check My Answers to see your results."
+msgstr "Répondez à toutes les questions, puis sélectionnez Vérifier mes réponses pour voir vos résultats."
+
+#: core/templates/core/feedback.html
+msgid "Anything that was hard to find or understand"
+msgstr "Tout ce qui était difficile à trouver ou à comprendre"
+
+#: ai/templates/ai/chatbot.html
+msgid "Ask about general aviation, military aviation, or history."
+msgstr "Posez vos questions sur l'aviation générale, l'aviation militaire ou l'histoire."
+
+#: ai/templates/ai/chatbot.html
+msgid "Ask anything about aviation or history. Try one of these to get started:"
+msgstr "Posez n'importe quelle question sur l'aviation ou l'histoire. Essayez l'une de celles-ci pour commencer :"
+
+#: core/templates/core/home.html
+msgid "Ask anything about general aviation, military aviation, or history."
+msgstr "Posez toutes vos questions sur l'aviation générale, l'aviation militaire ou l'histoire."
+
+#: core/templates/core/base.html
+msgid "Ask the AI"
+msgstr "Demander à l'IA"
+
+#: news/templates/news/_results.html news/views.py
+msgid "Aviation"
+msgstr "Aviation"
+
+#: core/templates/core/home.html
+msgid "Aviation & history,"
+msgstr "Aviation et histoire,"
+
+#: core/templates/core/radars.html
+msgid "Aviation Atlas"
+msgstr "Atlas de l'aviation"
+
+#: core/templates/core/base.html
+msgid "Aviation and history news, an AI chatbot and quiz, history games, a live flight tracker and radar tools."
+msgstr "Actualités aviation et histoire, chatbot et quiz IA, jeux d'histoire, suivi des vols en direct et outils radar."
+
+#: ai/views.py
+msgid "Aviation and world history"
+msgstr "L'aviation et l'histoire mondiale"
+
+#: core/services/content.py
+msgid "Birthplace of Turkish aviation."
+msgstr "Berceau de l'aviation turque."
+
+#: core/templates/core/feedback.html
+msgid "Bugs, with the page where they happened"
+msgstr "Les bugs, avec la page où ils se sont produits"
+
+#: ai/templates/ai/quiz.html
+msgid "Build a quiz around any topic, then submit it to reveal your score, the correct answers, and explanations."
+msgstr "Créez un quiz sur n'importe quel sujet, puis validez-le pour découvrir votre score, les bonnes réponses et les explications."
+
+#: games/templates/games/_who_am_i.html
+msgid "CLUE %(number)s"
+msgstr "INDICE %(number)s"
+
+#: news/templates/news/news.html
+msgid "Category"
+msgstr "Catégorie"
+
+#: core/templates/core/base.html
+msgid "Change language"
+msgstr "Changer de langue"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Change the settings above and select Generate New Quiz to play again."
+msgstr "Modifiez les réglages ci-dessus et sélectionnez Générer un nouveau quiz pour rejouer."
+
+#: core/context_processors.py
+msgid "Chatbot"
+msgstr "Chatbot"
+
+#: ai/templates/ai/_quiz_area.html
+msgid "Check My Answers"
+msgstr "Vérifier mes réponses"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Correct answer:"
+msgstr "Bonne réponse :"
+
+#: games/templates/games/_guess_result.html
+msgid "Correct! It was %(answer)s."
+msgstr "Bravo ! C'était %(answer)s."
+
+#: core/services/content.py
+msgid "December 7, 1941 - Attack on Pearl Harbor"
+msgstr "7 décembre 1941 - Attaque de Pearl Harbor"
+
+#: ai/templates/ai/quiz.html
+msgid "Difficulty"
+msgstr "Difficulté"
+
+#: ai/views.py
+msgid "Easy"
+msgstr "Facile"
+
+#: ai/templates/ai/chatbot.html
+msgid "Enter to send, Shift+Enter for a new line"
+msgstr "Entrée pour envoyer, Maj+Entrée pour aller à la ligne"
+
+#: core/services/content.py
+msgid "Europe's modern megahub."
+msgstr "Le méga-hub moderne de l'Europe."
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Every answer was right. Try a harder difficulty next."
+msgstr "Toutes vos réponses sont justes. Essayez un niveau plus difficile la prochaine fois."
+
+#: core/templates/core/home.html
+msgid "Everything on the portal"
+msgstr "Tout le portail"
+
+#: core/templates/core/home.html
+msgid "Explore"
+msgstr "Explorer"
+
+#: core/templates/core/radars.html
+msgid "Fastest flight"
+msgstr "Vol le plus rapide"
+
+#: core/templates/core/feedback.html
+msgid "Features you use the most"
+msgstr "Les fonctionnalités que vous utilisez le plus"
+
+#: core/context_processors.py core/templates/core/feedback.html core/templates/core/home.html
+msgid "Feedback"
+msgstr "Avis"
+
+#: core/templates/core/feedback.html
+msgid "Feedback form"
+msgstr "Formulaire d'avis"
+
+#: core/templates/core/home.html
+msgid "Filter announcements"
+msgstr "Filtrer les annonces"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Final Score: %(score)s/%(total)s (%(percentage)s%%)"
+msgstr "Score final : %(score)s/%(total)s (%(percentage)s %%)"
+
+#: core/services/content.py
+msgid "Fix"
+msgstr "Correctif"
+
+#: core/templates/core/base.html
+msgid "Footer"
+msgstr "Pied de page"
+
+#: core/context_processors.py
+msgid "Games"
+msgstr "Jeux"
+
+#: ai/templates/ai/quiz.html
+msgid "Generate New Quiz"
+msgstr "Générer un nouveau quiz"
+
+#: core/services/content.py
+msgid "Germany and Japan surrender unconditionally."
+msgstr "L'Allemagne et le Japon capitulent sans condition."
+
+#: core/services/content.py
+msgid "Germany invades Poland using Blitzkrieg tactics, starting WWII."
+msgstr "L'Allemagne envahit la Pologne grâce à la Blitzkrieg, déclenchant la Seconde Guerre mondiale."
+
+#: news/templates/news/news.html
+msgid "Get a three-paragraph AI summary of today's stories."
+msgstr "Obtenez un résumé IA des articles du jour en trois paragraphes."
+
+#: core/templates/core/home.html
+msgid "Give feedback"
+msgstr "Donner mon avis"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Good attempt."
+msgstr "Bel essai."
+
+#: core/templates/core/feedback.html
+msgid "Good things to mention"
+msgstr "Ce que vous pouvez mentionner"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Great result!"
+msgstr "Excellent résultat !"
+
+#: ai/views.py
+msgid "Hard"
+msgstr "Difficile"
+
+#: core/views.py
+msgid "Heading:"
+msgstr "Cap :"
+
+#: core/templates/core/base.html
+msgid "Hello! I am Kuzey, the creator of this portal. It brings together aviation news, historical insights, interactive quizzes, games, and radar tools. I hope you enjoy exploring it."
+msgstr "Bonjour ! Je suis Kuzey, le créateur de ce portail. Il rassemble l'actualité aéronautique, des repères historiques, des quiz interactifs, des jeux et des outils radar. J'espère que vous prendrez plaisir à l'explorer."
+
+#: core/templates/core/feedback.html
+msgid "Help improve the portal"
+msgstr "Aidez à améliorer le portail"
+
+#: core/templates/core/radars.html
+msgid "Highest flight"
+msgstr "Vol le plus haut"
+
+#: core/services/content.py
+msgid "Historic Royal Air Force base."
+msgstr "Base historique de la Royal Air Force."
+
+#: core/services/content.py
+msgid "Historically significant Turkish jet base."
+msgstr "Base de chasseurs à réaction turque d'importance historique."
+
+#: news/templates/news/_results.html news/views.py
+msgid "History"
+msgstr "Histoire"
+
+#: core/templates/core/home.html games/templates/games/history.html
+msgid "History Games"
+msgstr "Jeux d'histoire"
+
+#: ai/views.py
+msgid "How did the Concorde fly faster than sound?"
+msgstr "Comment le Concorde volait-il plus vite que le son ?"
+
+#: core/services/content.py
+msgid "I am a Roman general and dictator."
+msgstr "Je suis un général et dictateur romain."
+
+#: core/services/content.py
+msgid "I am famous for my 'We shall fight on the beaches' speech."
+msgstr "Je suis célèbre pour mon discours « Nous nous battrons sur les plages »."
+
+#: core/services/content.py
+msgid "I am often pictured with a cigar."
+msgstr "On me représente souvent avec un cigare."
+
+#: core/services/content.py
+msgid "I am the founder of the Republic of Türkiye."
+msgstr "Je suis le fondateur de la République de Turquie."
+
+#: core/services/content.py
+msgid "I crowned myself Emperor of the French."
+msgstr "Je me suis couronné empereur des Français."
+
+#: core/services/content.py
+msgid "I dominated European affairs for over a decade."
+msgstr "J'ai dominé les affaires européennes pendant plus de dix ans."
+
+#: core/services/content.py
+msgid "I famously crossed the Rubicon river."
+msgstr "J'ai franchi le Rubicon, un passage resté célèbre."
+
+#: core/services/content.py
+msgid "I was a British Prime Minister during WWII."
+msgstr "J'étais Premier ministre britannique pendant la Seconde Guerre mondiale."
+
+#: core/services/content.py
+msgid "I was born in Salonica in 1881."
+msgstr "Je suis né à Salonique en 1881."
+
+#: games/templates/games/_who_am_i.html
+msgid "Identify the figure:"
+msgstr "Identifiez le personnage :"
+
+#: games/templates/games/history.html
+msgid "Interactive chronology & strategy games"
+msgstr "Chronologie interactive et jeux de stratégie"
+
+#: core/templates/core/radars.html
+msgid "Jump to a location"
+msgstr "Aller à un lieu"
+
+#: core/services/content.py
+msgid "June 6, 1944 - D-Day"
+msgstr "6 juin 1944 - Jour J"
+
+#: core/templates/core/base.html
+msgid "Kuzey's Aviation & History Portal"
+msgstr "Le portail aviation et histoire de Kuzey"
+
+#: core/templates/core/base.html
+msgid "Kuzey's Aviation and History Portal"
+msgstr "Le portail aviation et histoire de Kuzey"
+
+#: core/templates/core/base.html
+msgid "Kuzey's Portal"
+msgstr "Le portail de Kuzey"
+
+#: core/views.py
+msgid "Live"
+msgstr "En direct"
+
+#: core/templates/core/radars.html
+msgid "Live Flight Tracker"
+msgstr "Suivi des vols en direct"
+
+#: core/templates/core/home.html
+msgid "Live Flights & Radars"
+msgstr "Vols en direct et radars"
+
+#: core/views.py
+msgid "Live data is unavailable right now. Please try again later."
+msgstr "Les données en direct sont indisponibles pour le moment. Veuillez réessayer plus tard."
+
+#: core/templates/core/radars.html
+msgid "Live flights & radars"
+msgstr "Vols en direct et radars"
+
+#: core/templates/core/radars.html
+msgid "Loading"
+msgstr "Chargement"
+
+#: core/templates/core/home.html
+msgid "Loading events"
+msgstr "Chargement des événements"
+
+#: core/templates/core/base.html
+msgid "Main"
+msgstr "Principal"
+
+#: core/services/content.py
+msgid "Major Asian aviation hub."
+msgstr "Grand hub aérien asiatique."
+
+#: core/templates/core/radars.html
+msgid "Map of aircraft over Türkiye"
+msgstr "Carte des avions au-dessus de la Turquie"
+
+#: core/templates/core/radars.html
+msgid "Map of airports and air bases"
+msgstr "Carte des aéroports et bases aériennes"
+
+#: core/services/content.py
+msgid "May 1940 - Fall of France & Dunkirk"
+msgstr "Mai 1940 - Chute de la France et Dunkerque"
+
+#: ai/views.py
+msgid "Medium"
+msgstr "Moyen"
+
+#: core/templates/core/base.html
+msgid "Menu"
+msgstr "Menu"
+
+#: core/services/content.py
+msgid "My final military defeat occurred at Waterloo."
+msgstr "Ma dernière défaite militaire a eu lieu à Waterloo."
+
+#: core/services/content.py
+msgid "My last words were allegedly addressed to Brutus."
+msgstr "Mes dernières paroles auraient été adressées à Brutus."
+
+#: core/services/content.py
+msgid "My military genius was proven at Gallipoli."
+msgstr "Mon génie militaire s'est révélé à Gallipoli."
+
+#: core/services/content.py
+msgid "New feature"
+msgstr "Nouveauté"
+
+#: core/context_processors.py core/templates/core/home.html news/templates/news/news.html
+msgid "News"
+msgstr "Actualités"
+
+#: games/templates/games/_who_am_i.html
+msgid "Next figure"
+msgstr "Personnage suivant"
+
+#: core/templates/core/home.html
+msgid "No announcements with this tag yet."
+msgstr "Aucune annonce avec cette étiquette pour l'instant."
+
+#: news/templates/news/_results.html
+msgid "No news is available right now."
+msgstr "Aucune actualité disponible pour le moment."
+
+#: news/templates/news/_results.html
+msgid "No stories match “%(query)s”."
+msgstr "Aucun article ne correspond à « %(query)s »."
+
+#: news/templates/news/_article_text.html
+msgid "No summary available."
+msgstr "Aucun résumé disponible."
+
+#: games/templates/games/_guess_result.html
+msgid "Not %(choice)s. Review the clues and try again."
+msgstr "Ce n'est pas %(choice)s. Relisez les indices et réessayez."
+
+#: ai/templates/ai/quiz.html
+msgid "Number of questions"
+msgstr "Nombre de questions"
+
+#: core/templates/core/home.html
+msgid "On this day"
+msgstr "Ce jour-là"
+
+#: ai/templates/ai/chatbot.html
+msgid "Online"
+msgstr "En ligne"
+
+#: core/templates/core/home.html
+msgid "Open radars"
+msgstr "Ouvrir les radars"
+
+#: core/templates/core/feedback.html
+msgid "Open the form in a new tab"
+msgstr "Ouvrir le formulaire dans un nouvel onglet"
+
+#: ai/templates/ai/quiz.html
+msgid "Options"
+msgstr "Options"
+
+#: core/views.py
+msgid "Paused"
+msgstr "En pause"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Perfect score! Outstanding work."
+msgstr "Score parfait ! Excellent travail."
+
+#: ai/templates/ai/quiz.html
+msgid "Pick a topic"
+msgstr "Choisissez un sujet"
+
+#: core/templates/core/home.html
+msgid "Play"
+msgstr "Jouer"
+
+#: ai/views.py
+msgid "Please answer question(s) %(numbers)s before checking your quiz."
+msgstr "Veuillez répondre à la ou aux questions %(numbers)s avant de vérifier votre quiz."
+
+#: ai/views.py
+msgid "Please enter a question first."
+msgstr "Veuillez d'abord saisir une question."
+
+#: ai/views.py
+msgid "Please enter a quiz topic first."
+msgstr "Veuillez d'abord saisir un sujet de quiz."
+
+#: ai/views.py
+msgid "Please wait %(seconds)d more second before asking again."
+msgid_plural "Please wait %(seconds)d more seconds before asking again."
+msgstr[0] "Veuillez patienter encore %(seconds)d seconde avant de poser une autre question."
+msgstr[1] "Veuillez patienter encore %(seconds)d secondes avant de poser une autre question."
+
+#: ai/views.py
+msgid "Please wait %(seconds)d more second before generating another quiz."
+msgid_plural "Please wait %(seconds)d more seconds before generating another quiz."
+msgstr[0] "Veuillez patienter encore %(seconds)d seconde avant de générer un autre quiz."
+msgstr[1] "Veuillez patienter encore %(seconds)d secondes avant de générer un autre quiz."
+
+#: ai/templates/ai/chatbot.html
+msgid "Portal AI Chatbot"
+msgstr "Chatbot IA du portail"
+
+#: core/templates/core/radars.html
+msgid "Positions refresh every minute. Click a plane for details."
+msgstr "Les positions sont actualisées chaque minute. Cliquez sur un avion pour plus de détails."
+
+#: ai/templates/ai/chatbot.html
+msgid "Preparing an answer..."
+msgstr "Préparation de la réponse..."
+
+#: ai/templates/ai/_quiz_area.html
+msgid "Question %(number)s of %(total)s"
+msgstr "Question %(number)s sur %(total)s"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Question %(number)s · Correct"
+msgstr "Question %(number)s · Correct"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Question %(number)s · Incorrect"
+msgstr "Question %(number)s · Incorrect"
+
+#: ai/templates/ai/quiz.html
+msgid "Questions"
+msgstr "Questions"
+
+#: core/context_processors.py core/templates/core/home.html ai/templates/ai/quiz.html
+msgid "Quiz"
+msgstr "Quiz"
+
+#: ai/templates/ai/quiz.html
+msgid "Quiz summary"
+msgstr "Résumé du quiz"
+
+#: core/context_processors.py core/templates/core/radars.html
+msgid "Radars"
+msgstr "Radars"
+
+#: news/templates/news/_results.html
+msgid "Read article"
+msgstr "Lire l'article"
+
+#: core/templates/core/home.html
+msgid "Read news"
+msgstr "Lire l'actualité"
+
+#: core/templates/core/home.html
+msgid "Read the latest news, ask the AI anything, test yourself with quizzes, and watch live flights over Türkiye."
+msgstr "Lisez les dernières actualités, posez toutes vos questions à l'IA, testez-vous avec des quiz et suivez les vols au-dessus de la Turquie en direct."
+
+#: core/templates/core/home.html
+msgid "Read the news"
+msgstr "Lire l'actualité"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Review the explanations below and try another quiz."
+msgstr "Lisez les explications ci-dessous et essayez un autre quiz."
+
+#: news/templates/news/news.html
+msgid "Search news"
+msgstr "Rechercher dans l'actualité"
+
+#: news/templates/news/news.html
+msgid "Search stories, e.g. Boeing or Rome"
+msgstr "Rechercher, p. ex. Boeing ou Rome"
+
+#: ai/templates/ai/chatbot.html
+msgid "Send"
+msgstr "Envoyer"
+
+#: core/services/content.py
+msgid "September 1, 1939 - Invasion of Poland"
+msgstr "1er septembre 1939 - Invasion de la Pologne"
+
+#: core/templates/core/feedback.html
+msgid "Share your feedback"
+msgstr "Donnez votre avis"
+
+#: news/templates/news/news.html
+msgid "Short on time?"
+msgstr "Pressé ?"
+
+#: core/templates/core/home.html
+msgid "Show %(counter)s older announcement"
+msgid_plural "Show %(counter)s older announcements"
+msgstr[0] "Afficher %(counter)s annonce plus ancienne"
+msgstr[1] "Afficher %(counter)s annonces plus anciennes"
+
+#: news/templates/news/_article_text.html
+msgid "Show more"
+msgstr "Afficher plus"
+
+#: core/views.py
+msgid "Showing positions from {time}. Live data will resume shortly."
+msgstr "Positions de {time}. Les données en direct reprendront sous peu."
+
+#: core/templates/core/base.html
+msgid "Skip to content"
+msgstr "Aller au contenu"
+
+#: core/templates/core/radars.html
+msgid "Source"
+msgstr "Source"
+
+#: core/views.py
+msgid "Speed:"
+msgstr "Vitesse :"
+
+#: core/templates/core/home.html
+msgid "Start a chat"
+msgstr "Démarrer une conversation"
+
+#: core/services/content.py
+msgid "Strategic NATO aviation hub."
+msgstr "Hub aérien stratégique de l'OTAN."
+
+#: news/templates/news/news.html
+msgid "Summarize with AI"
+msgstr "Résumer avec l'IA"
+
+#: core/templates/core/base.html
+msgid "Switch theme"
+msgstr "Changer de thème"
+
+#: core/context_processors.py
+msgid "Switch to dark theme"
+msgstr "Passer au thème sombre"
+
+#: core/context_processors.py core/templates/core/base.html
+msgid "Switch to light theme"
+msgstr "Passer au thème clair"
+
+#: core/templates/core/home.html
+msgid "Take a quiz"
+msgstr "Faire un quiz"
+
+#: core/templates/core/home.html
+msgid "Tell Kuzey what you like and what you'd like to see next."
+msgstr "Dites à Kuzey ce qui vous plaît et ce que vous aimeriez voir ensuite."
+
+#: core/templates/core/feedback.html
+msgid "Tell us what you like, what is confusing, and what you would like to see in a future update."
+msgstr "Dites-nous ce qui vous plaît, ce qui est déroutant et ce que vous aimeriez voir dans une prochaine mise à jour."
+
+#: ai/templates/ai/quiz.html
+msgid "Test what you know"
+msgstr "Testez vos connaissances"
+
+#: ai/views.py
+msgid "That quiz has expired. Please generate a new one."
+msgstr "Ce quiz a expiré. Veuillez en générer un nouveau."
+
+#: ai/views.py
+msgid "The AI chatbot couldn't answer right now. Please try again in a minute."
+msgstr "Le chatbot IA n'a pas pu répondre pour le moment. Veuillez réessayer dans une minute."
+
+#: ai/views.py
+msgid "The AI returned a quiz in the wrong format. Please select Generate New Quiz again."
+msgstr "L'IA a renvoyé un quiz dans un format incorrect. Veuillez sélectionner à nouveau Générer un nouveau quiz."
+
+#: news/templates/news/_briefing.html
+msgid "The AI summary is temporarily unavailable. Please try again in a few minutes."
+msgstr "Le résumé IA est temporairement indisponible. Veuillez réessayer dans quelques minutes."
+
+#: core/services/content.py
+msgid "The busiest passenger airport in the world."
+msgstr "L'aéroport le plus fréquenté au monde."
+
+#: core/services/content.py
+msgid "The issue is now fixed. You can use the AI features freely!"
+msgstr "Le problème est résolu. Vous pouvez utiliser les fonctionnalités d'IA librement !"
+
+#: core/services/content.py
+msgid "The largest naval invasion in history establishes the Western Front in Normandy."
+msgstr "Le plus grand débarquement de l'histoire ouvre le front de l'Ouest en Normandie."
+
+#: news/templates/news/news.html
+msgid "The latest aviation and history stories, updated every 15 minutes."
+msgstr "Les derniers articles d'aviation et d'histoire, mis à jour toutes les 15 minutes."
+
+#: core/templates/core/home.html
+msgid "The latest aviation and history stories, with search and filters."
+msgstr "Les derniers articles d'aviation et d'histoire, avec recherche et filtres."
+
+#: news/templates/news/_results.html
+msgid "The news sources may be busy. Please check back in a few minutes."
+msgstr "Les sources d'actualité sont peut-être surchargées. Revenez dans quelques minutes."
+
+#: core/services/content.py
+msgid "The portal has a cleaner design with dark and light themes, and is now available in English, Turkish, French and Spanish. Also new: \"On this day\" on the home page, a live flight tracker on the Radars page, and search and filters on the News page."
+msgstr "Le portail adopte un design épuré avec thèmes sombre et clair, et il est désormais disponible en anglais, turc, français et espagnol. Également nouveau : « Ce jour-là » sur la page d'accueil, le suivi des vols en direct sur la page Radars, ainsi que la recherche et les filtres sur la page Actualités."
+
+#: ai/views.py
+msgid "The quiz couldn't be created right now. Please try again in a minute."
+msgstr "Le quiz n'a pas pu être créé pour le moment. Veuillez réessayer dans une minute."
+
+#: news/templates/news/_translation.html
+msgid "The translation isn't available right now. Please try again later."
+msgstr "La traduction n'est pas disponible pour le moment. Veuillez réessayer plus tard."
+
+#: games/templates/games/history.html
+msgid "Three clues · one answer"
+msgstr "Trois indices · une réponse"
+
+#: core/templates/core/_on_this_day.html
+msgid "Today's events couldn't be loaded right now. Please check back later."
+msgstr "Les événements du jour n'ont pas pu être chargés. Revenez plus tard."
+
+#: core/templates/core/feedback.html
+msgid "Topics you'd like news, quizzes, or games about"
+msgstr "Les sujets sur lesquels vous aimeriez des articles, des quiz ou des jeux"
+
+#: news/templates/news/_results.html
+msgid "Translate"
+msgstr "Traduire"
+
+#: news/templates/news/_translation.html
+msgid "Translated by AI · show original"
+msgstr "Traduit par l'IA · afficher l'original"
+
+#: games/templates/games/history.html
+msgid "Travel through the key years of the Second World War, then test yourself on famous figures from history."
+msgstr "Parcourez les années clés de la Seconde Guerre mondiale, puis testez-vous sur des personnages célèbres de l'histoire."
+
+#: news/templates/news/_results.html
+msgid "Try a different word, or switch the category to All."
+msgstr "Essayez un autre mot ou choisissez la catégorie Tout."
+
+#: core/services/content.py
+msgid "USA joins the Allies after a massive surprise attack."
+msgstr "Les États-Unis rejoignent les Alliés après une attaque surprise massive."
+
+#: core/views.py
+msgid "Unavailable"
+msgstr "Indisponible"
+
+#: news/templates/news/_article_text.html
+msgid "Untitled"
+msgstr "Sans titre"
+
+#: core/services/content.py
+msgid "Update"
+msgstr "Mise à jour"
+
+#: core/views.py
+msgid "Updated {time}. Click a plane for details."
+msgstr "Mis à jour à {time}. Cliquez sur un avion pour plus de détails."
+
+#: core/templates/core/radars.html
+msgid "Ventusky weather radar"
+msgstr "Radar météo Ventusky"
+
+#: core/templates/core/radars.html
+msgid "Weather & Wind"
+msgstr "Météo et vent"
+
+#: ai/views.py
+msgid "What happened at the Battle of Gallipoli?"
+msgstr "Que s'est-il passé lors de la bataille de Gallipoli ?"
+
+#: ai/templates/ai/quiz.html
+msgid "What should the quiz be about?"
+msgstr "Sur quel sujet doit porter le quiz ?"
+
+#: core/templates/core/home.html
+msgid "What's new"
+msgstr "Nouveautés"
+
+#: games/templates/games/history.html
+msgid "Who Am I?"
+msgstr "Qui suis-je ?"
+
+#: ai/views.py
+msgid "Who were the Tuskegee Airmen?"
+msgstr "Qui étaient les aviateurs de Tuskegee ?"
+
+#: ai/views.py
+msgid "Why do planes leave contrails?"
+msgstr "Pourquoi les avions laissent-ils des traînées de condensation ?"
+
+#: games/templates/games/history.html
+msgid "World War II Timeline"
+msgstr "Chronologie de la Seconde Guerre mondiale"
+
+#: core/services/content.py
+msgid "You can now see a short summarized briefing of the latest aviation and history news."
+msgstr "Vous pouvez désormais lire un court résumé des dernières actualités aviation et histoire."
+
+#: ai/templates/ai/_quiz_results.html
+msgid "You have a strong grasp of the topic."
+msgstr "Vous maîtrisez bien le sujet."
+
+#: ai/templates/ai/_quiz_area.html
+msgid "Your Challenge"
+msgstr "Votre défi"
+
+#: ai/templates/ai/_quiz_results.html
+msgid "Your answer:"
+msgstr "Votre réponse :"
+
+#: ai/views.py
+msgid "Your personalized quiz is ready. Good luck!"
+msgstr "Votre quiz personnalisé est prêt. Bonne chance !"
+
+#: ai/templates/ai/chatbot.html
+msgid "Your question"
+msgstr "Votre question"
+
+#: ai/templates/ai/quiz.html
+msgid "Your quiz"
+msgstr "Votre quiz"
+
+#: core/templates/core/home.html
+msgid "all in one place."
+msgstr "réunies en un seul endroit."
+
+#: ai/templates/ai/quiz.html
+msgid "creating..."
+msgstr "création..."
+
+#: ai/templates/ai/chatbot.html
+msgid "e.g. Why did the Concorde stop flying?"
+msgstr "p. ex. Pourquoi le Concorde a-t-il cessé de voler ?"
+
+#: core/views.py
+msgid "unknown"
+msgstr "inconnue"
+
+#: news/templates/news/news.html
+msgid "working..."
+msgstr "en cours..."
+
+#: ai/templates/ai/_quiz_area.html
+msgid "{answered} of {total} answered"
+msgstr "{answered} sur {total} répondues"
+
+#: core/templates/core/_announcement.html
+msgctxt "announcement badge"
+msgid "New"
+msgstr "Nouveau"

@@ -1,28 +1,29 @@
 {% extends "core/base.html" %}
+{% load i18n %}
 
-{% block title %}Quiz · Kuzey's Aviation and History Portal{% endblock %}
+{% block title %}{% translate "Quiz" %} · {{ block.super }}{% endblock %}
 
 {% block content %}
 <header class="page-head">
-  <span class="eyebrow">AI-generated knowledge quiz</span>
-  <h1>Test what you know</h1>
-  <p>Build a quiz around any topic, then submit it to reveal your score, the correct answers, and explanations.</p>
+  <span class="eyebrow">{% translate "AI-generated knowledge quiz" %}</span>
+  <h1>{% translate "Test what you know" %}</h1>
+  <p>{% translate "Build a quiz around any topic, then submit it to reveal your score, the correct answers, and explanations." %}</p>
 </header>
 
 <div class="quiz-setup">
   <form class="card" id="quiz-settings" hx-post="{% url 'ai:quiz_generate' %}" hx-target="#quiz-area" hx-disabled-elt="find button[type=submit]">
     <div class="field">
-      <label class="label" for="topic">What should the quiz be about?</label>
+      <label class="label" for="topic">{% translate "What should the quiz be about?" %}</label>
       <input type="text" id="topic" name="topic" value="{{ default_topic }}" maxlength="{{ topic_max_chars }}" required>
     </div>
 
     <fieldset class="field" style="border:0;margin:0;padding:0">
-      <legend class="label" style="margin-bottom:8px">Difficulty</legend>
+      <legend class="label" style="margin-bottom:8px">{% translate "Difficulty" %}</legend>
       <div class="segmented">
-        {% for level in difficulties %}
+        {% for level, label in difficulties %}
           <label>
             <input type="radio" name="difficulty" value="{{ level }}"{% if level == "Medium" %} checked{% endif %}>
-            <span>{{ level }}</span>
+            <span>{{ label }}</span>
           </label>
         {% endfor %}
       </div>
@@ -30,7 +31,7 @@
 
     <div class="field">
       <div class="label-row">
-        <label class="label" for="count">Number of questions</label>
+        <label class="label" for="count">{% translate "Number of questions" %}</label>
         <output class="range-value" id="count-value" for="count">{{ min_questions }}</output>
       </div>
       <input type="range" id="count" name="count" min="{{ min_questions }}" max="{{ max_questions }}" value="{{ min_questions }}">
@@ -39,23 +40,23 @@
 
     <div>
       <button type="submit">
-        <span>Generate New Quiz</span>
-        <span class="htmx-indicator">· creating...</span>
+        <span>{% translate "Generate New Quiz" %}</span>
+        <span class="htmx-indicator">· {% translate "creating..." %}</span>
       </button>
     </div>
   </form>
 
-  <aside class="card summary-card" aria-label="Quiz summary">
+  <aside class="card summary-card" aria-label="{% translate 'Quiz summary' %}" data-no-topic="{% translate 'Pick a topic' %}">
     <div>
-      <span class="eyebrow">Your quiz</span>
+      <span class="eyebrow">{% translate "Your quiz" %}</span>
       <h2 id="preview-topic" style="margin-top:6px">{{ default_topic }}</h2>
     </div>
     <div class="summary-stats">
-      <div class="stat"><strong id="preview-count">{{ min_questions }}</strong><span>Questions</span></div>
-      <div class="stat"><strong id="preview-difficulty">Medium</strong><span>Difficulty</span></div>
-      <div class="stat"><strong>4</strong><span>Options</span></div>
+      <div class="stat"><strong id="preview-count">{{ min_questions }}</strong><span>{% translate "Questions" %}</span></div>
+      <div class="stat"><strong id="preview-difficulty"></strong><span>{% translate "Difficulty" %}</span></div>
+      <div class="stat"><strong>4</strong><span>{% translate "Options" %}</span></div>
     </div>
-    <p>Answer every question, then select Check My Answers to see your results.</p>
+    <p>{% translate "Answer every question, then select Check My Answers to see your results." %}</p>
   </aside>
 </div>
 
@@ -68,8 +69,10 @@
     const settings = document.getElementById("quiz-settings");
     function updatePreview() {
       const count = settings.elements.count.value;
-      const difficulty = settings.querySelector("input[name=difficulty]:checked").value;
-      const topic = settings.elements.topic.value.trim() || "Pick a topic";
+      // Show the translated label of the chosen difficulty.
+      const difficulty = settings.querySelector("input[name=difficulty]:checked").nextElementSibling.textContent;
+      const noTopic = document.querySelector("[data-no-topic]").dataset.noTopic;
+      const topic = settings.elements.topic.value.trim() || noTopic;
       document.getElementById("count-value").textContent = count;
       document.getElementById("preview-count").textContent = count;
       document.getElementById("preview-difficulty").textContent = difficulty;
@@ -84,7 +87,8 @@
       if (!form) return;
       const total = form.querySelectorAll(".question").length;
       const answered = form.querySelectorAll("input[type=radio]:checked").length;
-      form.querySelector("[data-answered]").textContent = answered + " of " + total + " answered";
+      const counter = form.querySelector("[data-answered]");
+      counter.textContent = counter.dataset.template.replace("{answered}", answered).replace("{total}", total);
       form.querySelector(".progress span").style.width = (total ? (answered / total) * 100 : 0) + "%";
     }
     document.addEventListener("change", function (event) {

@@ -1,4 +1,4 @@
-"""All Groq calls: the daily briefing, the chatbot and quiz generation."""
+"""All Groq calls: the daily briefing, the chatbot, quizzes and translation."""
 
 import json
 
@@ -6,7 +6,10 @@ from django.conf import settings
 from django.core.cache import cache
 from groq import Groq
 
-BRIEFING_CACHE_KEY = "daily_briefing"
+# The language the model should write in, by site language code.
+LANGUAGE_NAMES = {"en": "English", "tr": "Turkish", "fr": "French", "es": "Spanish"}
+
+BRIEFING_CACHE_KEY = "daily_briefing:{language}"
 BRIEFING_CACHE_SECONDS = 6 * 60 * 60
 BRIEFING_STORIES_PER_CATEGORY = 6
 
@@ -30,16 +33,31 @@ def _complete(prompt):
     return response.choices[0].message.content.strip()
 
 
-def daily_briefing(articles):
-    """Summarize the latest articles. Successful results are cached for six hours.
+def _strip_code_fences(text):
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+    return text
 
-    Errors are raised, not cached, so the next visitor triggers a retry.
+
+def _write_in(language):
+    """The prompt line that sets the answer language."""
+    return f"Write your entire answer in {LANGUAGE_NAMES.get(language, 'English')}."
+
+
+def daily_briefing(articles, language="en"):
+    """Summarize the latest articles in the given language.
+
+    Successful results are cached for six hours per language. Errors are
+    raised, not cached, so the next visitor triggers a retry. Returns None
+    when there are no articles to summarize.
     """
-    briefing = cache.get(BRIEFING_CACHE_KEY)
+    key = BRIEFING_CACHE_KEY.format(language=language)
+    briefing = cache.get(key)
     if briefing is not None:
         return briefing
     if not articles:
-        return "There is not enough recent news to prepare a briefing right now."
+        return None
 
     selected = []
     for category in ("Aviation", "History"):
@@ -53,29 +71,26 @@ def daily_briefing(articles):
         "Write a concise daily briefing in 3 short paragraphs: one aviation "
         "update, one history update, and one overall takeaway. Use only the "
         "information supplied below. Do not invent facts, dates, or events. "
-        "Do not use Markdown headings.\n\n" + source_text
+        f"Do not use Markdown headings. {_write_in(language)}\n\n" + source_text
     )
     briefing = _complete(prompt)
-    cache.set(BRIEFING_CACHE_KEY, briefing, BRIEFING_CACHE_SECONDS)
+    cache.set(key, briefing, BRIEFING_CACHE_SECONDS)
     return briefing
 
 
-def ask_chatbot(question):
+def ask_chatbot(question, language="en"):
     prompt = (
         "You are the AI assistant for Kuzey's Aviation and History Portal. "
         "Answer questions about aviation and history clearly, accurately, and "
-        f"engagingly. User question: {question}"
+        f"engagingly. {_write_in(language)} User question: {question}"
     )
     return _complete(prompt)
 
 
 def parse_quiz(response_text, question_count):
     """Parse and check the model's JSON quiz. Raises QuizFormatError."""
-    text = response_text.strip()
-    if text.startswith("```"):
-        text = text.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
     try:
-        quiz = json.loads(text)
+        quiz = json.loads(_strip_code_fences(response_text))
     except json.JSONDecodeError as error:
         raise QuizFormatError("The quiz was not valid JSON.") from error
 
@@ -104,9 +119,10 @@ def parse_quiz(response_text, question_count):
     ]
 
 
-def generate_quiz(topic, difficulty, question_count):
+def generate_quiz(topic, difficulty, question_count, language="en"):
     prompt = f"""
 Create a {difficulty.lower()} multiple-choice quiz about: {topic}
+Write the questions, options and explanations in {LANGUAGE_NAMES.get(language, "English")}. Keep the JSON keys in English.
 
 Create exactly {question_count} questions. Each question must have exactly four answer options and only one correct answer.
 Return ONLY valid JSON in this exact format:
@@ -119,6 +135,22 @@ Return ONLY valid JSON in this exact format:
 The answer_index must be a number from 0 to 3. Do not include Markdown or code fences.
 """
     return parse_quiz(_complete(prompt), question_count)
+
+
+def translate_article(title, summary, language):
+    """Translate a news article. Returns {"title": ..., "summary": ...}."""
+    prompt = (
+        f"Translate this news article into {LANGUAGE_NAMES[language]}. Keep names, "
+        "aircraft models and numbers as they are. Return ONLY valid JSON in the form "
+        '{"title": "...", "summary": "..."} with no Markdown or code fences.\n\n'
+        + json.dumps({"title": title, "summary": summary}, ensure_ascii=False)
+    )
+    result = json.loads(_strip_code_fences(_complete(prompt)))
+    if not isinstance(result, dict) or not all(
+        isinstance(result.get(key), str) for key in ("title", "summary")
+    ):
+        raise ValueError("The translation was in the wrong format.")
+    return {"title": result["title"], "summary": result["summary"]}
 
 
 def score_quiz(quiz, answers):

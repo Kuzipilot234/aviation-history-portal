@@ -1,21 +1,22 @@
 {% extends "core/base.html" %}
+{% load i18n %}
 
-{% block title %}AI Chatbot · Kuzey's Aviation and History Portal{% endblock %}
+{% block title %}{% translate "AI Chatbot" %} · {{ block.super }}{% endblock %}
 
 {% block content %}
-<section class="card chat" aria-label="AI chatbot">
+<section class="card chat" aria-label="{% translate 'AI chatbot' %}">
   <div class="chat-head">
     <div class="avatar" aria-hidden="true">AI</div>
     <div>
-      <h1>Portal AI Chatbot</h1>
-      <p>Ask about general aviation, military aviation, or history.</p>
+      <h1>{% translate "Portal AI Chatbot" %}</h1>
+      <p>{% translate "Ask about general aviation, military aviation, or history." %}</p>
     </div>
-    <span class="chip live">Online</span>
+    <span class="chip live">{% translate "Online" %}</span>
   </div>
 
   <div class="thread" id="thread" aria-live="polite">
     <div class="welcome" id="welcome">
-      <p>Ask anything about aviation or history. Try one of these to get started:</p>
+      <p>{% translate "Ask anything about aviation or history. Try one of these to get started:" %}</p>
       <div class="suggestions">
         {% for suggestion in suggestions %}
           <button type="button" data-suggestion="{{ suggestion }}">{{ suggestion }}</button>
@@ -26,17 +27,17 @@
 
   <div>
     <div class="typing" id="typing">
-      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span> Preparing an answer...
+      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span> {% translate "Preparing an answer..." %}
     </div>
     <form class="composer" id="composer"
           hx-post="{% url 'ai:chatbot_ask' %}" hx-target="#thread" hx-swap="beforeend"
           hx-indicator="#typing" hx-disabled-elt="find button">
-      <label class="visually-hidden" for="question">Your question</label>
+      <label class="visually-hidden" for="question">{% translate "Your question" %}</label>
       <textarea id="question" name="question" rows="1" maxlength="{{ max_chars }}" required
-                placeholder="e.g. Why did the Concorde stop flying?"></textarea>
-      <button type="submit" aria-label="Send">Send <span aria-hidden="true">↑</span></button>
+                placeholder="{% translate 'e.g. Why did the Concorde stop flying?' %}"></textarea>
+      <button type="submit">{% translate "Send" %} <span aria-hidden="true">↑</span></button>
     </form>
-    <div class="composer-meta"><span id="char-count">0</span>/{{ max_chars }} · Enter to send, Shift+Enter for a new line</div>
+    <div class="composer-meta"><span id="char-count">0</span>/{{ max_chars }} · {% translate "Enter to send, Shift+Enter for a new line" %}</div>
   </div>
 </section>
 {% endblock %}

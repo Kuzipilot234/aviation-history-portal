@@ -223,11 +223,36 @@ main.container {
 .main-nav a[aria-current="page"] { color: var(--text); background: var(--bg-sunk); }
 .topbar-cta { margin-left: auto; }
 
+.lang-menu { position: relative; flex: none; margin-left: -16px; }
+.lang-menu summary {
+  list-style: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 36px; padding: 0 10px;
+  border-radius: var(--radius-sm); border: 1px solid var(--line);
+  background: var(--bg); color: var(--muted);
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+}
+.lang-menu summary::-webkit-details-marker { display: none; }
+.lang-menu summary:hover, .lang-menu[open] summary { background: var(--bg-soft); color: var(--text); }
+.lang-menu summary svg { width: 17px; height: 17px; }
+.lang-options {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 10;
+  min-width: 180px; padding: 6px; display: grid; gap: 2px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.lang-options button {
+  justify-content: space-between; width: 100%; min-height: 36px; padding: 6px 10px;
+  background: transparent; color: var(--text); box-shadow: none; font-weight: 500; border-radius: 6px;
+}
+.lang-options button:hover { background: var(--bg-soft); }
+.lang-options button[aria-current="true"] { background: var(--accent-soft); color: var(--accent-text); }
+.lang-options .code { font-family: var(--font-mono); font-size: 0.75rem; color: var(--faint); }
+
 .theme-toggle {
   width: 36px; height: 36px; min-height: 0; padding: 0; flex: none;
   border-radius: var(--radius-sm); border: 1px solid var(--line);
   background: var(--bg); color: var(--muted); box-shadow: none;
-  margin-left: -16px; /* sits close to the Ask the AI button */
+  margin-left: -20px; /* sits close to the language menu */
 }
 .theme-toggle:hover { background: var(--bg-soft); color: var(--text); }
 .theme-toggle svg { width: 18px; height: 18px; }
@@ -480,9 +505,17 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .article p { color: var(--muted); font-size: 0.93rem; }
 .article details summary { cursor: pointer; color: var(--accent-text); font-weight: 550; font-size: 0.86rem; list-style: none; }
 .article details summary::-webkit-details-marker { display: none; }
-.article details[open] summary { display: none; }
-.article:has(details[open]) .preview { display: none; }
-.article .link-arrow { margin-top: auto; font-size: 0.88rem; }
+.article details:not(.original)[open] > summary { display: none; }
+.article-body:has(> details:not(.original)[open]) > .preview { display: none; }
+.article-body { display: grid; gap: 10px; align-content: start; }
+.article-actions { margin-top: auto; padding-top: 4px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.article .link-arrow { font-size: 0.88rem; }
+.translate-button { min-height: 30px; padding: 3px 10px; font-size: 0.82rem; }
+.translated { display: grid; gap: 10px; }
+.translated .original summary { cursor: pointer; color: var(--faint); font-size: 0.8rem; font-weight: 500; list-style: none; }
+.translated .original summary::-webkit-details-marker { display: none; }
+.translated .original[open] > div { display: grid; gap: 8px; margin-top: 8px; padding-left: 12px; border-left: 2px solid var(--line); opacity: 0.85; }
+.translated .original[open] > div h3 { font-size: 0.95rem; }
 .empty { color: var(--muted); padding: 40px 24px; text-align: center; border: 1px dashed var(--line-strong); border-radius: var(--radius); display: grid; gap: 6px; justify-items: center; }
 .empty strong { color: var(--text); }
 
@@ -708,7 +741,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 @media (max-width: 960px) {
   .menu-button { display: inline-grid; place-items: center; }
-  .theme-toggle { margin-left: auto; width: 40px; height: 40px; }
+  .lang-menu { margin-left: auto; }
+  .lang-menu summary { height: 40px; }
+  .theme-toggle { width: 40px; height: 40px; }
   .topbar-cta { display: none; }
   .main-nav {
     display: none;

@@ -1,6 +1,6 @@
-{% if not choice %}
+{% load i18n %}{% if not choice %}
 {% elif correct %}
-<p class="alert success">Correct! It was {{ answer }}.</p>
+<p class="alert success">{% blocktranslate %}Correct! It was {{ answer }}.{% endblocktranslate %}</p>
 {% else %}
-<p class="alert error">Not {{ choice }}. Review the clues and try again.</p>
+<p class="alert error">{% blocktranslate %}Not {{ choice }}. Review the clues and try again.{% endblocktranslate %}</p>
 {% endif %}

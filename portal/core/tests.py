@@ -1,7 +1,10 @@
 import json
+from datetime import datetime, timezone
+from io import StringIO
 from unittest import mock
 
 from django.core.cache import cache
+from django.core.management import call_command
 from django.test import TestCase, override_settings
 
 from core.services import ai, flights, news, onthisday
@@ -11,19 +14,23 @@ LOCMEM = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"
 
 SAMPLE_ARTICLES = [
     {
+        "id": "a350",
         "category": "Aviation",
         "title": "A350 milestone",
         "summary": "Airbus delivers its 700th A350.",
         "preview": "Airbus delivers its 700th A350.",
         "url": "https://example.com/a350",
+        "published_at": datetime(2026, 10, 2, 9, 5, tzinfo=timezone.utc),
         "published": "Fri, 02 Oct 2026",
     },
     {
+        "id": "hastings",
         "category": "History",
         "title": "Battle of Hastings",
         "summary": "A look back at 1066.",
         "preview": "A look back at 1066.",
         "url": "",
+        "published_at": None,
         "published": "Thu, 01 Oct 2026",
     },
 ]
@@ -45,12 +52,16 @@ class NewsServiceTests(TestCase):
         text = '<p>Hello&nbsp;<a href="x">world</a> &amp; more</p><script>bad()</script>'
         self.assertEqual(news.strip_html(text), "Hello world & more")
 
-    def test_published_label(self):
+    def test_published_at(self):
         import time
 
         entry = {"published_parsed": time.strptime("2026-10-03 09:05", "%Y-%m-%d %H:%M")}
-        self.assertEqual(news.published_label(entry), "3 Oct 2026, 09:05")
-        self.assertEqual(news.published_label({"published": "Yesterday"}), "Yesterday")
+        self.assertEqual(news.published_at(entry), datetime(2026, 10, 3, 9, 5, tzinfo=timezone.utc))
+        self.assertIsNone(news.published_at({"published": "Yesterday"}))
+
+    def test_article_id_is_stable(self):
+        self.assertEqual(news.article_id("https://x.com/a", "A"), news.article_id("https://x.com/a", "B"))
+        self.assertNotEqual(news.article_id("https://x.com/a", ""), news.article_id("https://x.com/b", ""))
 
     def test_preview_cuts_on_a_word(self):
         self.assertEqual(news.make_preview("one two three", length=9), "one two...")
@@ -252,3 +263,62 @@ class FlightTests(TestCase):
     def test_no_data_at_all(self, fetch):
         data = self.client.get("/radars/flights.json").json()
         self.assertEqual(data, {"aircraft": [], "updated": None, "stale": True})
+
+
+@override_settings(CACHES=LOCMEM, SESSION_ENGINE="django.contrib.sessions.backends.cache")
+class TranslationTests(TestCase):
+    def setUp(self):
+        cache.clear()
+        patcher = mock.patch("core.services.news.fetch_articles", return_value=SAMPLE_ARTICLES)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_every_message_is_translated(self):
+        # Fails when visible text was added without translations.
+        call_command("update_translations", "--check", stdout=StringIO())
+
+    def test_browser_language_is_used(self):
+        response = self.client.get("/", HTTP_ACCEPT_LANGUAGE="tr")
+        self.assertContains(response, '<html lang="tr"')
+        self.assertContains(response, "Duyurular")  # Announcements
+
+    def test_switching_language(self):
+        response = self.client.post("/i18n/setlang/", {"language": "fr", "next": "/news/"})
+        self.assertRedirects(response, "/news/", fetch_redirect_response=False)
+        response = self.client.get("/news/")
+        self.assertContains(response, "Actualités")
+        self.assertContains(response, "2 articles")
+        self.assertContains(response, "Traduire")  # translate buttons appear outside English
+
+    def test_every_page_loads_in_every_language(self):
+        for language in ["en", "tr", "fr", "es"]:
+            for url in ["/", "/news/", "/chatbot/", "/quiz/", "/history/", "/feedback/", "/radars/"]:
+                with self.subTest(language=language, url=url):
+                    response = self.client.get(url, HTTP_ACCEPT_LANGUAGE=language)
+                    self.assertEqual(response.status_code, 200)
+
+    def test_english_has_no_translate_button(self):
+        self.assertNotContains(self.client.get("/news/", HTTP_ACCEPT_LANGUAGE="en"), "Translate")
+
+    @mock.patch("core.services.ai._complete", return_value="Cevap.")
+    def test_ai_answers_in_the_visitor_language(self, complete):
+        self.client.post("/chatbot/ask/", {"question": "Merhaba"}, HTTP_ACCEPT_LANGUAGE="tr")
+        self.assertIn("in Turkish", complete.call_args[0][0])
+
+    @mock.patch("core.services.ai._complete", return_value=json.dumps({"title": "A350 dönüm noktası", "summary": "Airbus 700. A350'yi teslim etti."}))
+    def test_article_translation_is_cached(self, complete):
+        response = self.client.post("/news/a350/translate/", HTTP_ACCEPT_LANGUAGE="tr")
+        self.assertContains(response, "A350 dönüm noktası")
+        self.assertContains(response, "orijinali göster")
+        self.client.post("/news/a350/translate/", HTTP_ACCEPT_LANGUAGE="tr")
+        complete.assert_called_once()
+
+    @mock.patch("core.services.ai._complete", side_effect=RuntimeError("down"))
+    def test_article_translation_failure_keeps_original(self, complete):
+        response = self.client.post("/news/a350/translate/", HTTP_ACCEPT_LANGUAGE="es")
+        self.assertContains(response, "A350 milestone")
+        self.assertContains(response, "La traducción no está disponible")
+
+    def test_unknown_article_or_english_returns_404(self):
+        self.assertEqual(self.client.post("/news/nope/translate/", HTTP_ACCEPT_LANGUAGE="tr").status_code, 404)
+        self.assertEqual(self.client.post("/news/a350/translate/", HTTP_ACCEPT_LANGUAGE="en").status_code, 404)

@@ -1,19 +1,21 @@
-{% if warning %}<p class="alert warning">{{ warning }}</p>{% endif %}
+{% load i18n %}{% if warning %}<p class="alert warning">{{ warning }}</p>{% endif %}
 {% if error %}<p class="alert error">{{ error }}</p>{% endif %}
 {% if success %}<p class="alert success">{{ success }}</p>{% endif %}
 
 {% if questions %}
+{# The page script fills in {answered} and {total} as answers are picked. #}
+{% translate "{answered} of {total} answered" as answered_template %}
 <form class="quiz-form" hx-post="{% url 'ai:quiz_check' %}" hx-target="#quiz-area" hx-disabled-elt="find button[type=submit]">
   <div class="quiz-toolbar">
-    <strong>Your Challenge</strong>
+    <strong>{% translate "Your Challenge" %}</strong>
     <div class="progress" aria-hidden="true"><span></span></div>
-    <span class="eyebrow" data-answered>0 of {{ questions|length }} answered</span>
+    <span class="eyebrow" data-answered data-template="{{ answered_template }}"></span>
   </div>
 
   {% for question in questions %}
     <div class="card question" role="radiogroup" aria-labelledby="{{ question.name }}-text">
       <div class="question-text" id="{{ question.name }}-text">
-        <span class="eyebrow">Question {{ question.number }} of {{ questions|length }}</span>
+        <span class="eyebrow">{% blocktranslate with number=question.number total=questions|length %}Question {{ number }} of {{ total }}{% endblocktranslate %}</span>
         {{ question.text }}
       </div>
       <div class="options">
@@ -28,7 +30,7 @@
   {% endfor %}
 
   <div>
-    <button type="submit">Check My Answers</button>
+    <button type="submit">{% translate "Check My Answers" %}</button>
   </div>
 </form>
 {% endif %}

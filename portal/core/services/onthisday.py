@@ -8,7 +8,8 @@ from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
-FEED_URL = "https://en.wikipedia.org/api/rest_v1/feed/onthisday/selected/{month:02d}/{day:02d}"
+# Each site language has its own Wikipedia with its own "On this day" picks.
+FEED_URL = "https://{language}.wikipedia.org/api/rest_v1/feed/onthisday/selected/{month:02d}/{day:02d}"
 USER_AGENT = "KuzeyPortal/1.0 (https://kuzipilot.onrender.com)"
 CACHE_SECONDS = 12 * 60 * 60
 EVENT_COUNT = 4
@@ -31,14 +32,14 @@ def _parse(data):
     return events
 
 
-def todays_events():
+def todays_events(language="en"):
     """Return a few events for today's date. Raises if Wikipedia can't be reached."""
     today = timezone.localdate()
-    key = f"onthisday:{today:%m-%d}"
+    key = f"onthisday:{language}:{today:%m-%d}"
     events = cache.get(key)
     if events is None:
         response = httpx.get(
-            FEED_URL.format(month=today.month, day=today.day),
+            FEED_URL.format(language=language, month=today.month, day=today.day),
             headers={"User-Agent": USER_AGENT},
             timeout=10,
             follow_redirects=True,

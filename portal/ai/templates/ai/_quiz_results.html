@@ -1,37 +1,39 @@
-<div class="card results-head">
-  <div class="score-ring" style="--pct: {{ percentage }}" role="img" aria-label="{{ percentage }} percent">
+{% load i18n %}<div class="card results-head">
+  <div class="score-ring" style="--pct: {{ percentage }}" role="img" aria-label="{{ percentage }}%">
     <div><strong>{{ score }}/{{ total }}</strong><span>{{ percentage }}%</span></div>
   </div>
   <div class="field">
-    <span class="eyebrow">Final Score: {{ score }}/{{ total }} ({{ percentage }}%)</span>
+    <span class="eyebrow">{% blocktranslate %}Final Score: {{ score }}/{{ total }} ({{ percentage }}%){% endblocktranslate %}</span>
     {% if score == total %}
-      <h2>Perfect score! Outstanding work. 🎉</h2>
-      <p>Every answer was right. Try a harder difficulty next.</p>
+      <h2>{% translate "Perfect score! Outstanding work." %} 🎉</h2>
+      <p>{% translate "Every answer was right. Try a harder difficulty next." %}</p>
     {% elif percentage >= 70 %}
-      <h2>Great result!</h2>
-      <p>You have a strong grasp of the topic.</p>
+      <h2>{% translate "Great result!" %}</h2>
+      <p>{% translate "You have a strong grasp of the topic." %}</p>
     {% else %}
-      <h2>Good attempt.</h2>
-      <p>Review the explanations below and try another quiz.</p>
+      <h2>{% translate "Good attempt." %}</h2>
+      <p>{% translate "Review the explanations below and try another quiz." %}</p>
     {% endif %}
   </div>
 </div>
 
-<div class="section-head"><h2>Answer Review</h2></div>
+<div class="section-head"><h2>{% translate "Answer Review" %}</h2></div>
 <div class="review">
   {% for result in results %}
     <article class="review-item{% if not result.is_correct %} wrong{% endif %}">
-      {% if result.is_correct %}
-        <span class="verdict ok">Question {{ forloop.counter }} · Correct</span>
-      {% else %}
-        <span class="verdict bad">Question {{ forloop.counter }} · Incorrect</span>
-      {% endif %}
+      {% with number=forloop.counter %}
+        {% if result.is_correct %}
+          <span class="verdict ok">{% blocktranslate %}Question {{ number }} · Correct{% endblocktranslate %}</span>
+        {% else %}
+          <span class="verdict bad">{% blocktranslate %}Question {{ number }} · Incorrect{% endblocktranslate %}</span>
+        {% endif %}
+      {% endwith %}
       <span class="q">{{ result.question }}</span>
       <span class="answers">
-        {% if not result.is_correct %}Your answer: {{ result.chosen_answer }} · {% endif %}Correct answer: <b>{{ result.correct_answer }}</b>
+        {% if not result.is_correct %}{% translate "Your answer:" %} {{ result.chosen_answer }} · {% endif %}{% translate "Correct answer:" %} <b>{{ result.correct_answer }}</b>
       </span>
       {% if result.explanation %}<span class="why">{{ result.explanation }}</span>{% endif %}
     </article>
   {% endfor %}
 </div>
-<p class="eyebrow">Change the settings above and select Generate New Quiz to play again.</p>
+<p class="eyebrow">{% translate "Change the settings above and select Generate New Quiz to play again." %}</p>

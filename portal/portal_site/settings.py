@@ -44,6 +44,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -59,6 +60,7 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
+                "django.template.context_processors.i18n",
                 "core.context_processors.navigation",
             ],
         },
@@ -86,9 +88,18 @@ CACHES = {
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
+# The site's languages. Visitors get their browser's language when it is one
+# of these, and can switch with the menu in the top bar.
+LANGUAGES = [
+    ("en", "English"),
+    ("tr", "Türkçe"),
+    ("fr", "Français"),
+    ("es", "Español"),
+]
+LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "Europe/Istanbul"
-USE_I18N = False
+USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"

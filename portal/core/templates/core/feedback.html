@@ -1,25 +1,26 @@
 {% extends "core/base.html" %}
+{% load i18n %}
 
-{% block title %}Feedback · Kuzey's Aviation and History Portal{% endblock %}
+{% block title %}{% translate "Feedback" %} · {{ block.super }}{% endblock %}
 
 {% block content %}
 <header class="page-head">
-  <span class="eyebrow">Help improve the portal</span>
-  <h1>Share your feedback</h1>
-  <p>Tell us what you like, what is confusing, and what you would like to see in a future update.</p>
+  <span class="eyebrow">{% translate "Help improve the portal" %}</span>
+  <h1>{% translate "Share your feedback" %}</h1>
+  <p>{% translate "Tell us what you like, what is confusing, and what you would like to see in a future update." %}</p>
 </header>
 
 <div class="feedback-layout">
   <aside class="card feedback-side">
-    <h2>Good things to mention</h2>
+    <h2>{% translate "Good things to mention" %}</h2>
     <ul>
-      <li>Features you use the most</li>
-      <li>Anything that was hard to find or understand</li>
-      <li>Topics you'd like news, quizzes, or games about</li>
-      <li>Bugs, with the page where they happened</li>
+      <li>{% translate "Features you use the most" %}</li>
+      <li>{% translate "Anything that was hard to find or understand" %}</li>
+      <li>{% translate "Topics you'd like news, quizzes, or games about" %}</li>
+      <li>{% translate "Bugs, with the page where they happened" %}</li>
     </ul>
-    <a class="button ghost" href="{{ form_url }}" target="_blank" rel="noopener">Open the form in a new tab <span aria-hidden="true">↗</span></a>
+    <a class="button ghost" href="{{ form_url }}" target="_blank" rel="noopener">{% translate "Open the form in a new tab" %} <span aria-hidden="true">↗</span></a>
   </aside>
-  <iframe class="feedback-frame" src="{{ form_url }}?embedded=true" title="Feedback form" loading="lazy"></iframe>
+  <iframe class="feedback-frame" src="{{ form_url }}?embedded=true" title="{% translate 'Feedback form' %}" loading="lazy"></iframe>
 </div>
 {% endblock %}

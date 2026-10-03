@@ -7,3 +7,4 @@ httpx==0.28.1
 feedparser==6.0.14
 Markdown==3.11
 nh3==0.3.7
+polib==1.2.0

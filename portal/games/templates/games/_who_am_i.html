@@ -1,9 +1,9 @@
-<ol class="clues">
+{% load i18n %}<ol class="clues">
   {% for clue in clues %}
-    <li><span>CLUE {{ forloop.counter }}</span> {{ clue }}</li>
+    <li><span>{% blocktranslate with number=forloop.counter %}CLUE {{ number }}{% endblocktranslate %}</span> {{ clue }}</li>
   {% endfor %}
 </ol>
-<p class="label" id="guess-label" style="margin-bottom:10px">Identify the figure:</p>
+<p class="label" id="guess-label" style="margin-bottom:10px">{% translate "Identify the figure:" %}</p>
 <div class="guess-grid" role="group" aria-labelledby="guess-label">
   {% for name in names %}
     <button type="button" name="guess" value="{{ name }}" hx-post="{% url 'games:guess' %}" hx-target="#guess-result">{{ name }}</button>
@@ -11,5 +11,5 @@
 </div>
 <div id="guess-result" aria-live="polite"></div>
 <div class="game-foot">
-  <button type="button" class="ghost small" hx-post="{% url 'games:next_figure' %}" hx-target="#who-am-i">Next figure <span aria-hidden="true">→</span></button>
+  <button type="button" class="ghost small" hx-post="{% url 'games:next_figure' %}" hx-target="#who-am-i">{% translate "Next figure" %} <span aria-hidden="true">→</span></button>
 </div>

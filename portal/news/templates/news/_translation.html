@@ -1,0 +1,14 @@
+{% load i18n %}{% if failed %}
+{% include "news/_article_text.html" with title=article.title summary=article.summary preview=article.preview %}
+<p class="alert info">{% translate "The translation isn't available right now. Please try again later." %}</p>
+{% else %}
+<div class="translated">
+  {% include "news/_article_text.html" with title=translation.title summary=translation.summary %}
+  <details class="original">
+    <summary>{% translate "Translated by AI · show original" %}</summary>
+    <div lang="en">
+      {% include "news/_article_text.html" with title=article.title summary=article.summary %}
+    </div>
+  </details>
+</div>
+{% endif %}
