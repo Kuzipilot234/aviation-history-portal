@@ -20,7 +20,8 @@ if not SECRET_KEY:
         raise RuntimeError("Set the SECRET_KEY environment variable.")
     SECRET_KEY = "local-development-only-key"
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+# Ignore stray spaces or quotes pasted around the key in a dashboard.
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip().strip("\"'")
 GROQ_MODEL = "openai/gpt-oss-120b"
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
