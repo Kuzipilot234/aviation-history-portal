@@ -213,8 +213,9 @@ class PageTests(TestCase):
         self.assertEqual(self.client.get("/history/timeline/1999/").status_code, 404)
 
 
-STATE = ["4bc8c5", "PGT980R ", "Turkey", 0, 0, 30.2471, 40.6799, 6522.72, False, 186.29, 109.19, 11.7, None, 6600.0]
-GROUNDED = ["abc123", "", "Turkey", 0, 0, 29.0, 41.0, None, True, 0, 0, 0, None, None]
+STATE = {"hex": "4bc8c5", "flight": "PGT980R ", "lat": 40.6799, "lon": 30.2471, "alt_baro": 21000,
+         "alt_geom": 21654, "gs": 362.4, "track": 109.2, "t": "A20N", "r": "TC-NBA"}
+GROUNDED = {"hex": "abc123", "flight": "", "lat": 41.0, "lon": 29.0, "alt_baro": "ground"}
 
 
 @override_settings(CACHES=LOCMEM)
@@ -223,12 +224,13 @@ class FlightTests(TestCase):
         cache.clear()
 
     def test_parse_skips_planes_on_the_ground(self):
-        aircraft = flights._parse([STATE, GROUNDED])
-        self.assertEqual(len(aircraft), 1)
+        aircraft = flights._parse([STATE, GROUNDED, STATE])
+        self.assertEqual(len(aircraft), 1)  # grounded skipped, duplicate merged
         plane = aircraft[0]
         self.assertEqual(plane["callsign"], "PGT980R")
         self.assertEqual(plane["altitude_ft"], 21654)
         self.assertEqual(plane["speed_kt"], 362)
+        self.assertEqual(plane["type"], "A20N")
 
     @mock.patch("core.services.flights._fetch")
     def test_falls_back_to_last_good_result(self, fetch):
@@ -237,7 +239,7 @@ class FlightTests(TestCase):
         self.assertFalse(first["stale"])
         self.assertEqual(len(first["aircraft"]), 1)
 
-        # Make the cached result old, then let OpenSky fail.
+        # Make the cached result old, then let adsb.lol fail.
         cached = cache.get(flights.CACHE_KEY)
         cache.set(flights.CACHE_KEY, {**cached, "updated": cached["updated"] - 3600})
         fetch.side_effect = RuntimeError("429")

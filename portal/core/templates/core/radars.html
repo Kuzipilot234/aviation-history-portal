@@ -17,7 +17,7 @@
 <section class="card map-card" aria-labelledby="flights-title">
   <div class="card-header">
     <div>
-      <span class="eyebrow">Source · OpenSky Network</span>
+      <span class="eyebrow">Source · adsb.lol</span>
       <h2 id="flights-title">Live Flight Tracker</h2>
     </div>
     <span class="chip live" id="flight-status">Loading</span>
@@ -120,7 +120,7 @@
         planes.clearLayers();
         data.aircraft.forEach(function (plane) {
           const lines = [
-            ["div", plane.country, "popup-code"],
+            ["div", [plane.type, plane.registration].filter(Boolean).join(" · ") || "Aircraft", "popup-code"],
             ["strong", plane.callsign],
             ["div", plane.altitude_ft != null ? "Altitude: " + fmt.format(plane.altitude_ft) + " ft" : "Altitude: unknown"],
             ["div", plane.speed_kt != null ? "Speed: " + fmt.format(plane.speed_kt) + " kt" : "Speed: unknown"],

@@ -112,4 +112,6 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "root": {"handlers": ["console"], "level": "INFO"},
+    # httpx logs every request at INFO; only show its problems.
+    "loggers": {"httpx": {"level": "WARNING"}},
 }

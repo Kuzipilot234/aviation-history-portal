@@ -1,8 +1,11 @@
-"""Live aircraft positions over Türkiye from the OpenSky Network.
+"""Live aircraft positions over Türkiye from adsb.lol.
 
-Anonymous OpenSky access allows about 400 credits a day and this area costs
-3 credits per request, so results are shared through the cache. When OpenSky
-is unavailable or the daily limit is reached, the last good result is shown.
+adsb.lol is a free, open ADS-B network. Its API returns aircraft within
+250 nautical miles of a point, so Türkiye is covered with three circles.
+OpenSky was used first, but it blocks requests from cloud hosts like Render.
+
+Results are shared through the cache. When adsb.lol is unavailable, the
+last good result is shown.
 """
 
 import logging
@@ -13,47 +16,55 @@ from django.core.cache import cache
 
 logger = logging.getLogger(__name__)
 
-STATES_URL = "https://opensky-network.org/api/states/all"
-# Türkiye, with a little of the surrounding airspace.
-AREA = {"lamin": 35.8, "lomin": 25.6, "lamax": 42.2, "lomax": 44.9}
+POINT_URL = "https://api.adsb.lol/v2/point/{lat}/{lon}/{radius}"
+USER_AGENT = "KuzeyPortal/1.0 (https://kuzipilot.onrender.com)"
+# West, central and east Türkiye; 250 nm is the API's largest radius.
+SEARCH_CIRCLES = [(39.8, 29.0), (39.0, 35.0), (39.0, 41.0)]
+RADIUS_NM = 250
 CENTER = [39.0, 35.2]
-FRESH_SECONDS = 3 * 60
+FRESH_SECONDS = 2 * 60
 STALE_SECONDS = 24 * 60 * 60
 CACHE_KEY = "flights:turkiye"
-MAX_AIRCRAFT = 400
-
-METERS_TO_FEET = 3.28084
-MS_TO_KNOTS = 1.94384
+MAX_AIRCRAFT = 500
 
 
-def _parse(states):
-    aircraft = []
-    for state in states or []:
-        icao24, callsign, country = state[0], (state[1] or "").strip(), state[2]
-        lon, lat, baro_altitude, on_ground = state[5], state[6], state[7], state[8]
-        velocity, heading, geo_altitude = state[9], state[10], state[13]
-        if on_ground or lat is None or lon is None:
+def _number(value):
+    return value if isinstance(value, (int, float)) and not isinstance(value, bool) else None
+
+
+def _parse(aircraft_list):
+    aircraft = {}
+    for plane in aircraft_list or []:
+        lat, lon = _number(plane.get("lat")), _number(plane.get("lon"))
+        # adsb.lol reports "ground" as the altitude of taxiing aircraft.
+        if lat is None or lon is None or plane.get("alt_baro") == "ground":
             continue
-        altitude = geo_altitude if geo_altitude is not None else baro_altitude
-        aircraft.append(
-            {
-                "id": icao24,
-                "callsign": callsign or icao24.upper(),
-                "country": country,
-                "lat": round(lat, 4),
-                "lon": round(lon, 4),
-                "altitude_ft": round(altitude * METERS_TO_FEET) if altitude is not None else None,
-                "speed_kt": round(velocity * MS_TO_KNOTS) if velocity is not None else None,
-                "heading": round(heading) if heading is not None else 0,
-            }
-        )
-    return aircraft[:MAX_AIRCRAFT]
+        icao = plane.get("hex", "")
+        altitude = _number(plane.get("alt_geom")) or _number(plane.get("alt_baro"))
+        speed, heading = _number(plane.get("gs")), _number(plane.get("track"))
+        aircraft[icao] = {
+            "id": icao,
+            "callsign": (plane.get("flight") or "").strip() or plane.get("r") or icao.upper(),
+            "type": plane.get("t") or "",
+            "registration": plane.get("r") or "",
+            "lat": round(lat, 4),
+            "lon": round(lon, 4),
+            "altitude_ft": round(altitude) if altitude is not None else None,
+            "speed_kt": round(speed) if speed is not None else None,
+            "heading": round(heading) if heading is not None else 0,
+        }
+    return list(aircraft.values())[:MAX_AIRCRAFT]
 
 
 def _fetch():
-    response = httpx.get(STATES_URL, params=AREA, timeout=15)
-    response.raise_for_status()
-    return _parse(response.json().get("states"))
+    combined = []
+    with httpx.Client(headers={"User-Agent": USER_AGENT}, timeout=15) as client:
+        for lat, lon in SEARCH_CIRCLES:
+            response = client.get(POINT_URL.format(lat=lat, lon=lon, radius=RADIUS_NM))
+            response.raise_for_status()
+            combined += response.json().get("ac") or []
+    # Overlapping circles report some aircraft twice; _parse keys by ICAO address.
+    return _parse(combined)
 
 
 def live_flights():
@@ -65,7 +76,7 @@ def live_flights():
     try:
         result = {"aircraft": _fetch(), "updated": int(time.time())}
     except Exception:
-        logger.warning("OpenSky request failed", exc_info=True)
+        logger.warning("adsb.lol request failed", exc_info=True)
         if cached:
             return {**cached, "stale": True}
         return {"aircraft": [], "updated": None, "stale": True}
