@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: aviation-history-portal
+    name: kuzipilot
     runtime: python
     plan: free
     rootDir: portal
