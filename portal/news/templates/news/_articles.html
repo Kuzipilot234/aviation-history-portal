@@ -1,13 +1,24 @@
-<section>
-  <h2>{{ heading }}</h2>
+<section class="section" aria-label="{{ heading }}">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Source · {{ source }}</span>
+      <h2>{{ heading }}</h2>
+    </div>
+    <span class="eyebrow">{{ articles|length }} stories</span>
+  </div>
   {% if articles %}
     <div class="news-grid">
       {% for article in articles %}
-        <article class="panel article">
-          <h4>{{ article.title }}</h4>
-          <span class="meta">{{ article.category }} · {{ article.published }}</span>
+        <article class="card article">
+          <div class="article-meta">
+            <span class="chip {{ kind }}">{{ article.category }}</span>
+            <time>{{ article.published }}</time>
+          </div>
+          <h3>
+            {% if article.url %}<a href="{{ article.url }}" target="_blank" rel="noopener">{{ article.title }}</a>{% else %}{{ article.title }}{% endif %}
+          </h3>
           {% if article.preview != article.summary %}
-            <p>{{ article.preview }}</p>
+            <p class="preview">{{ article.preview }}</p>
             <details>
               <summary>Show more</summary>
               <p>{{ article.summary }}</p>
@@ -16,12 +27,12 @@
             <p>{{ article.summary }}</p>
           {% endif %}
           {% if article.url %}
-            <a class="button" href="{{ article.url }}" target="_blank" rel="noopener">Read original article</a>
+            <a class="read-link" href="{{ article.url }}" target="_blank" rel="noopener">Read original article <span aria-hidden="true">↗</span></a>
           {% endif %}
         </article>
       {% endfor %}
     </div>
   {% else %}
-    <p class="message info">{{ empty }}</p>
+    <p class="empty">{{ empty }}</p>
   {% endif %}
 </section>

@@ -13,16 +13,26 @@ CHAT_MAX_CHARS = 300
 QUIZ_COOLDOWN_SECONDS = 20
 QUIZ_TOPIC_MAX_CHARS = 100
 DEFAULT_TOPIC = "Aviation and world history"
+CHAT_SUGGESTIONS = [
+    "How did the Concorde fly faster than sound?",
+    "What happened at the Battle of Gallipoli?",
+    "Why do planes leave contrails?",
+    "Who were the Tuskegee Airmen?",
+]
 
 
 def chatbot(request):
-    return render(request, "ai/chatbot.html", {"max_chars": CHAT_MAX_CHARS})
+    return render(
+        request,
+        "ai/chatbot.html",
+        {"max_chars": CHAT_MAX_CHARS, "suggestions": CHAT_SUGGESTIONS},
+    )
 
 
 @require_POST
 def chatbot_ask(request):
     question = request.POST.get("question", "").strip()[:CHAT_MAX_CHARS]
-    context = {}
+    context = {"question": question}
     if not question:
         context["warning"] = "Please enter a question first."
     elif wait := seconds_to_wait(request, "chat", CHAT_COOLDOWN_SECONDS):

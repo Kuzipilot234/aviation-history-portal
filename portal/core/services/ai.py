@@ -128,6 +128,7 @@ def score_quiz(quiz, answers):
             **question,
             "chosen": chosen,
             "correct_answer": question["options"][question["answer_index"]],
+            "chosen_answer": question["options"][chosen] if chosen is not None else None,
             "is_correct": chosen == question["answer_index"],
         }
         for question, chosen in zip(quiz, answers)

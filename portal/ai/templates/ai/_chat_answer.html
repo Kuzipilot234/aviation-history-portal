@@ -1,10 +1,13 @@
-{% load portal %}{% if warning %}
-<p class="message warning">{{ warning }}</p>
+{% load portal %}{% if question %}
+<div class="bubble user"><div class="bubble-body">{{ question }}</div></div>
+{% endif %}
+{% if warning %}
+<div class="bubble notice"><div class="bubble-body">{{ warning }}</div></div>
 {% elif error %}
-<p class="message error">{{ error }}</p>
+<div class="bubble notice error"><div class="bubble-body">{{ error }}</div></div>
 {% elif answer %}
-<div class="panel stack">
-  <h3>Strategic Intelligence Report</h3>
-  <div class="ai-text">{{ answer|markdownify }}</div>
+<div class="bubble bot">
+  <div class="avatar" aria-hidden="true">AI</div>
+  <div class="bubble-body ai-text">{{ answer|markdownify }}</div>
 </div>
 {% endif %}

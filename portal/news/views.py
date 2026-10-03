@@ -2,6 +2,7 @@ import logging
 import random
 
 from django.shortcuts import render
+from django.utils import timezone
 
 from core.services import ai, news
 from core.services.content import ANNOUNCEMENTS, QUOTES
@@ -15,6 +16,7 @@ def home(request):
         request,
         "news/home.html",
         {
+            "today": timezone.localdate(),
             "quote": random.choice(QUOTES),
             "announcements": ANNOUNCEMENTS,
             "aviation_articles": news.by_category(articles, "Aviation"),

@@ -4,50 +4,70 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Kuzey's Aviation and History Portal{% endblock %}</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+  <meta name="description" content="Aviation and history news, an AI chatbot and quiz, history games and live radar tools.">
+  <meta name="theme-color" content="#070f1a">
+  <link rel="icon" href="{% static 'core/img/site_logo.png' %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700;112,800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="{% static 'core/css/portal.css' %}">
   {% block head %}{% endblock %}
   <script src="{% static 'core/js/htmx.min.js' %}" defer></script>
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-  <div class="layout">
-    <aside class="sidebar">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar" id="topbar">
+    <div class="topbar-inner">
       <a class="brand" href="{% url 'news:home' %}">
-        <img src="{% static 'core/img/site_logo.png' %}" alt="" width="170" height="170">
-        <span>Kuzey Aviation and History Portal</span>
+        <img src="{% static 'core/img/site_logo.png' %}" alt="" width="36" height="36">
+        <span class="brand-name">Kuzey's Portal<small>Aviation &amp; History</small></span>
       </a>
-      <nav aria-label="Main">
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="main-nav" id="menu-button">
+        <span class="menu-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Menu</span>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Main">
         {% for item in nav_items %}
-          <a href="{{ item.url }}"{% if item.active %} class="active" aria-current="page"{% endif %}>
-            <span aria-hidden="true">{{ item.icon }}</span> {{ item.label }}
-          </a>
+          <a href="{{ item.url }}"{% if item.active %} aria-current="page"{% endif %}>{{ item.label }}</a>
         {% endfor %}
       </nav>
-      <p class="sidebar-note">Explore aviation, history, and more.</p>
-    </aside>
+    </div>
+  </header>
 
-    <main>
-      <header class="site-header">
-        <h1>✈️ Kuzey's Aviation &amp; History Portal 📜</h1>
-        <p>Explore aviation news, history, AI quizzes, games, and live radar tools.</p>
-      </header>
+  <main id="main" class="container">
+    {% block content %}{% endblock %}
+  </main>
 
-      {% block content %}{% endblock %}
-
-      <details class="about">
-        <summary>👤 About the Creator / Portal</summary>
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-about">
+        <span class="eyebrow">About the portal</span>
         <p>
           Hello! I am Kuzey, the creator of this Aviation and History Portal.
-          This portal brings together aviation news, historical insights,
-          interactive quizzes, games, and radar tools. I hope you enjoy
-          exploring it! ✈️📜
+          It brings together aviation news, historical insights, interactive
+          quizzes, games, and radar tools. I hope you enjoy exploring it.
         </p>
-      </details>
-    </main>
-  </div>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        {% for item in nav_items %}<a href="{{ item.url }}">{{ item.label }}</a>{% endfor %}
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const bar = document.getElementById("topbar");
+      const button = document.getElementById("menu-button");
+      button.addEventListener("click", function () {
+        const open = bar.toggleAttribute("data-open");
+        button.setAttribute("aria-expanded", String(open));
+      });
+      const onScroll = () => bar.toggleAttribute("data-scrolled", window.scrollY > 8);
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,21 +1,33 @@
 {% extends "core/base.html" %}
 
-{% block title %}History Mini Games · Kuzey's Aviation and History Portal{% endblock %}
+{% block title %}History Games · Kuzey's Aviation and History Portal{% endblock %}
 
 {% block content %}
-<h2>📜 Interactive Chronology &amp; Strategy Games</h2>
+<header class="page-head">
+  <span class="eyebrow">Interactive chronology &amp; strategy games</span>
+  <h1>History Games</h1>
+  <p>Travel through the key years of the Second World War, then test yourself on famous figures from history.</p>
+</header>
 
-<section>
-  <h3>⚔️ World War II Timeline</h3>
-  <div id="timeline">
-    {% include "games/_timeline.html" %}
-  </div>
-</section>
+<div class="games-grid">
+  <section class="card" aria-labelledby="timeline-title">
+    <div class="card-header">
+      <div>
+        <span class="eyebrow">1939 – 1945</span>
+        <h2 id="timeline-title">World War II Timeline</h2>
+      </div>
+    </div>
+    <div id="timeline">{% include "games/_timeline.html" %}</div>
+  </section>
 
-<section>
-  <h3>🕵️ Historical 'Who Am I?' Challenge</h3>
-  <div id="who-am-i" class="stack">
-    {% include "games/_who_am_i.html" %}
-  </div>
-</section>
+  <section class="card" aria-labelledby="who-title">
+    <div class="card-header">
+      <div>
+        <span class="eyebrow">Three clues · one answer</span>
+        <h2 id="who-title">Who Am I?</h2>
+      </div>
+    </div>
+    <div id="who-am-i">{% include "games/_who_am_i.html" %}</div>
+  </section>
+</div>
 {% endblock %}

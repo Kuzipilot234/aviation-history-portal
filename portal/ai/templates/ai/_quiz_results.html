@@ -1,24 +1,37 @@
-<h2>Final Score: {{ score }}/{{ total }} ({{ percentage }}%)</h2>
-{% if score == total %}
-  <p class="message success"><span class="celebrate" aria-hidden="true">🎉</span> Perfect score! Outstanding work.</p>
-{% elif percentage >= 70 %}
-  <p class="message success">Great result! You have a strong grasp of the topic.</p>
-{% else %}
-  <p class="message info">Good attempt. Review the explanations below and try another quiz.</p>
-{% endif %}
+<div class="card results-head">
+  <div class="score-ring" style="--pct: {{ percentage }}" role="img" aria-label="{{ percentage }} percent">
+    <div><strong>{{ score }}/{{ total }}</strong><span>{{ percentage }}%</span></div>
+  </div>
+  <div class="field">
+    <span class="eyebrow">Final Score: {{ score }}/{{ total }} ({{ percentage }}%)</span>
+    {% if score == total %}
+      <h2>Perfect score! Outstanding work. 🎉</h2>
+      <p>Every answer was right. Try a harder difficulty next.</p>
+    {% elif percentage >= 70 %}
+      <h2>Great result!</h2>
+      <p>You have a strong grasp of the topic.</p>
+    {% else %}
+      <h2>Good attempt.</h2>
+      <p>Review the explanations below and try another quiz.</p>
+    {% endif %}
+  </div>
+</div>
 
-<h3>Answer Review</h3>
-<div class="stack">
+<div class="section-head"><h2>Answer Review</h2></div>
+<div class="review">
   {% for result in results %}
-    <div class="message result {% if result.is_correct %}success{% else %}error{% endif %}">
+    <article class="review-item{% if not result.is_correct %} wrong{% endif %}">
       {% if result.is_correct %}
-        <strong>✅ Question {{ forloop.counter }}: Correct</strong>
+        <span class="verdict ok">Question {{ forloop.counter }} · Correct</span>
       {% else %}
-        <strong>❌ Question {{ forloop.counter }}: Incorrect — correct answer: {{ result.correct_answer }}</strong>
+        <span class="verdict bad">Question {{ forloop.counter }} · Incorrect</span>
       {% endif %}
-      <span>{{ result.question }}</span>
-      {% if result.explanation %}<span class="hint">Explanation: {{ result.explanation }}</span>{% endif %}
-    </div>
+      <span class="q">{{ result.question }}</span>
+      <span class="answers">
+        {% if not result.is_correct %}Your answer: {{ result.chosen_answer }} · {% endif %}Correct answer: <b>{{ result.correct_answer }}</b>
+      </span>
+      {% if result.explanation %}<span class="why">{{ result.explanation }}</span>{% endif %}
+    </article>
   {% endfor %}
 </div>
-<p class="hint">Change the settings above and select Generate New Quiz to play again.</p>
+<p class="eyebrow">Change the settings above and select Generate New Quiz to play again.</p>

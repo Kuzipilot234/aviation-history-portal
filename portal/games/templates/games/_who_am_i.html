@@ -1,18 +1,15 @@
-<ul class="clues">
+<ol class="clues">
   {% for clue in clues %}
-    <li>Clue {{ forloop.counter }}: {{ clue }}</li>
+    <li><span>CLUE {{ forloop.counter }}</span> {{ clue }}</li>
   {% endfor %}
-</ul>
-<div class="field">
-  <label for="guess">Identify the figure:</label>
-  <select id="guess" name="guess" hx-post="{% url 'games:guess' %}" hx-trigger="change" hx-target="#guess-result">
-    <option value="">Select...</option>
-    {% for name in names %}
-      <option value="{{ name }}">{{ name }}</option>
-    {% endfor %}
-  </select>
+</ol>
+<p class="label" id="guess-label" style="margin-bottom:10px">Identify the figure:</p>
+<div class="guess-grid" role="group" aria-labelledby="guess-label">
+  {% for name in names %}
+    <button type="button" name="guess" value="{{ name }}" hx-post="{% url 'games:guess' %}" hx-target="#guess-result">{{ name }}</button>
+  {% endfor %}
 </div>
 <div id="guess-result" aria-live="polite"></div>
-<div class="row">
-  <button type="button" class="secondary" hx-post="{% url 'games:next_figure' %}" hx-target="#who-am-i">🔄 Next Target / Figure</button>
+<div class="game-foot">
+  <button type="button" class="ghost small" hx-post="{% url 'games:next_figure' %}" hx-target="#who-am-i">Next figure <span aria-hidden="true">→</span></button>
 </div>

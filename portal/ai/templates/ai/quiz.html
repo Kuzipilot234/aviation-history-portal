@@ -3,60 +3,99 @@
 {% block title %}Quiz · Kuzey's Aviation and History Portal{% endblock %}
 
 {% block content %}
-<section>
-  <h2>🏆 AI-Generated Knowledge Quiz</h2>
-  <p class="section-intro">Build a quiz around any topic, then submit it to reveal your score, correct answers, and explanations.</p>
+<header class="page-head">
+  <span class="eyebrow">AI-generated knowledge quiz</span>
+  <h1>Test what you know</h1>
+  <p>Build a quiz around any topic, then submit it to reveal your score, the correct answers, and explanations.</p>
+</header>
 
-  <div class="quiz-setup">
-    <form id="quiz-settings" hx-post="{% url 'ai:quiz_generate' %}" hx-target="#quiz-area" hx-disabled-elt="find button">
-      <div class="field">
-        <label for="topic">What should the quiz be about?</label>
-        <input type="text" id="topic" name="topic" value="{{ default_topic }}" maxlength="{{ topic_max_chars }}" required>
-      </div>
-      <div class="field">
-        <label for="difficulty">Choose a difficulty</label>
-        <select id="difficulty" name="difficulty">
-          {% for level in difficulties %}
-            <option value="{{ level }}"{% if level == "Medium" %} selected{% endif %}>{{ level }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="field">
-        <label for="count">How many questions do you want? <output id="count-value" for="count">{{ min_questions }}</output></label>
-        <input type="range" id="count" name="count" min="{{ min_questions }}" max="{{ max_questions }}" value="{{ min_questions }}">
-      </div>
-      <div class="row">
-        <button type="submit">✨ Generate New Quiz</button>
-        <span class="htmx-indicator">Creating your personalized quiz...</span>
-      </div>
-    </form>
+<div class="quiz-setup">
+  <form class="card" id="quiz-settings" hx-post="{% url 'ai:quiz_generate' %}" hx-target="#quiz-area" hx-disabled-elt="find button[type=submit]">
+    <div class="field">
+      <label class="label" for="topic">What should the quiz be about?</label>
+      <input type="text" id="topic" name="topic" value="{{ default_topic }}" maxlength="{{ topic_max_chars }}" required>
+    </div>
 
-    <p class="message info" id="quiz-preview">
-      Your quiz will contain <strong id="preview-count">{{ min_questions }} questions</strong>
-      at <strong id="preview-difficulty">medium</strong> difficulty.
-      Answer every question, then select Check My Answers to see the results.
-    </p>
-  </div>
-</section>
+    <fieldset class="field" style="border:0;margin:0;padding:0">
+      <legend class="label" style="margin-bottom:8px">Difficulty</legend>
+      <div class="segmented">
+        {% for level in difficulties %}
+          <label>
+            <input type="radio" name="difficulty" value="{{ level }}"{% if level == "Medium" %} checked{% endif %}>
+            <span>{{ level }}</span>
+          </label>
+        {% endfor %}
+      </div>
+    </fieldset>
 
-<section id="quiz-area" aria-live="polite">
-  {% include "ai/_quiz_area.html" %}
-</section>
+    <div class="field">
+      <div class="label-row">
+        <label class="label" for="count">Number of questions</label>
+        <output class="range-value" id="count-value" for="count">{{ min_questions }}</output>
+      </div>
+      <input type="range" id="count" name="count" min="{{ min_questions }}" max="{{ max_questions }}" value="{{ min_questions }}">
+      <div class="range-scale"><span>{{ min_questions }}</span><span>{{ max_questions }}</span></div>
+    </div>
+
+    <div>
+      <button type="submit">
+        <span>Generate New Quiz</span>
+        <span class="htmx-indicator">· creating...</span>
+      </button>
+    </div>
+  </form>
+
+  <aside class="card summary-card" aria-label="Quiz summary">
+    <div>
+      <span class="eyebrow">Your quiz</span>
+      <h2 id="preview-topic" style="margin-top:6px">{{ default_topic }}</h2>
+    </div>
+    <div class="summary-stats">
+      <div class="stat"><strong id="preview-count">{{ min_questions }}</strong><span>Questions</span></div>
+      <div class="stat"><strong id="preview-difficulty">Medium</strong><span>Difficulty</span></div>
+      <div class="stat"><strong>4</strong><span>Options</span></div>
+    </div>
+    <p>Answer every question, then select Check My Answers to see your results.</p>
+  </aside>
+</div>
+
+<section id="quiz-area" aria-live="polite">{% include "ai/_quiz_area.html" %}</section>
 {% endblock %}
 
 {% block scripts %}
 <script>
   (function () {
-    const count = document.getElementById("count");
-    const difficulty = document.getElementById("difficulty");
+    const settings = document.getElementById("quiz-settings");
     function updatePreview() {
-      document.getElementById("count-value").textContent = count.value;
-      document.getElementById("preview-count").textContent = count.value + " questions";
-      document.getElementById("preview-difficulty").textContent = difficulty.value.toLowerCase();
+      const count = settings.elements.count.value;
+      const difficulty = settings.querySelector("input[name=difficulty]:checked").value;
+      const topic = settings.elements.topic.value.trim() || "Pick a topic";
+      document.getElementById("count-value").textContent = count;
+      document.getElementById("preview-count").textContent = count;
+      document.getElementById("preview-difficulty").textContent = difficulty;
+      document.getElementById("preview-topic").textContent = topic;
     }
-    count.addEventListener("input", updatePreview);
-    difficulty.addEventListener("change", updatePreview);
+    settings.addEventListener("input", updatePreview);
     updatePreview();
+
+    // Keep the answered counter and progress bar in step with the radio buttons.
+    function updateProgress() {
+      const form = document.querySelector(".quiz-form");
+      if (!form) return;
+      const total = form.querySelectorAll(".question").length;
+      const answered = form.querySelectorAll("input[type=radio]:checked").length;
+      form.querySelector("[data-answered]").textContent = answered + " of " + total + " answered";
+      form.querySelector(".progress span").style.width = (total ? (answered / total) * 100 : 0) + "%";
+    }
+    document.addEventListener("change", function (event) {
+      if (event.target.closest(".quiz-form")) updateProgress();
+    });
+    document.body.addEventListener("htmx:afterSwap", function (event) {
+      if (event.detail.target.id !== "quiz-area") return;
+      updateProgress();
+      event.detail.target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    updateProgress();
   })();
 </script>
 {% endblock %}

@@ -2,6 +2,7 @@
 
 import html
 import logging
+from datetime import datetime
 
 import feedparser
 import nh3
@@ -31,6 +32,15 @@ def make_preview(text, length=PREVIEW_LENGTH):
     return text[:length].rsplit(" ", 1)[0] + "..."
 
 
+def published_label(entry):
+    """A short date like '3 Oct 2026, 09:23', or the feed's own text."""
+    parsed = entry.get("published_parsed")
+    if parsed:
+        moment = datetime(*parsed[:6])
+        return f"{moment.day} {moment:%b %Y, %H:%M}"
+    return entry.get("published", "Unknown date")
+
+
 def fetch_articles():
     """Download every feed. A feed that fails is skipped."""
     articles = []
@@ -49,7 +59,7 @@ def fetch_articles():
                     "summary": summary,
                     "preview": make_preview(summary),
                     "url": entry.get("link", ""),
-                    "published": entry.get("published", "Unknown date"),
+                    "published": published_label(entry),
                 }
             )
     return articles

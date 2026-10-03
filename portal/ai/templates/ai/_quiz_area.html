@@ -1,26 +1,34 @@
-{% if warning %}<p class="message warning">{{ warning }}</p>{% endif %}
-{% if error %}<p class="message error">{{ error }}</p>{% endif %}
-{% if success %}<p class="message success">{{ success }}</p>{% endif %}
+{% if warning %}<p class="alert warning">{{ warning }}</p>{% endif %}
+{% if error %}<p class="alert error">{{ error }}</p>{% endif %}
+{% if success %}<p class="alert success">{{ success }}</p>{% endif %}
 
 {% if questions %}
-<h2>Your Challenge</h2>
 <form class="quiz-form" hx-post="{% url 'ai:quiz_check' %}" hx-target="#quiz-area" hx-disabled-elt="find button[type=submit]">
+  <div class="quiz-toolbar">
+    <strong>Your Challenge</strong>
+    <div class="progress" aria-hidden="true"><span></span></div>
+    <span class="eyebrow" data-answered>0 of {{ questions|length }} answered</span>
+  </div>
+
   {% for question in questions %}
-    <fieldset class="panel question">
-      <legend>
-        <span class="count">Question {{ question.number }} of {{ questions|length }}</span><br>
+    <div class="card question" role="radiogroup" aria-labelledby="{{ question.name }}-text">
+      <div class="question-text" id="{{ question.name }}-text">
+        <span class="eyebrow">Question {{ question.number }} of {{ questions|length }}</span>
         {{ question.text }}
-      </legend>
-      {% for value, option in question.options %}
-        <label class="option">
-          <input type="radio" name="{{ question.name }}" value="{{ value }}"{% if question.chosen == value %} checked{% endif %}>
-          <span>{{ option }}</span>
-        </label>
-      {% endfor %}
-    </fieldset>
+      </div>
+      <div class="options">
+        {% for value, option in question.options %}
+          <label class="option">
+            <input type="radio" name="{{ question.name }}" value="{{ value }}"{% if question.chosen == value %} checked{% endif %}>
+            <span data-key="{% cycle 'A' 'B' 'C' 'D' %}">{{ option }}</span>
+          </label>
+        {% endfor %}
+      </div>
+    </div>
   {% endfor %}
-  <div class="row">
-    <button type="submit">✅ Check My Answers</button>
+
+  <div>
+    <button type="submit">Check My Answers</button>
   </div>
 </form>
 {% endif %}

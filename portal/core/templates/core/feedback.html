@@ -3,13 +3,23 @@
 {% block title %}Feedback · Kuzey's Aviation and History Portal{% endblock %}
 
 {% block content %}
-<section>
-  <h2>💬 Help Improve the Portal</h2>
-  <p class="section-intro">
-    Tell us what you like, what is confusing, and what you would like to see
-    in a future update. Your feedback will help improve the portal.
-  </p>
+<header class="page-head">
+  <span class="eyebrow">Help improve the portal</span>
+  <h1>Share your feedback</h1>
+  <p>Tell us what you like, what is confusing, and what you would like to see in a future update.</p>
+</header>
+
+<div class="feedback-layout">
+  <aside class="card feedback-side">
+    <h2>Good things to mention</h2>
+    <ul>
+      <li>Features you use the most</li>
+      <li>Anything that was hard to find or understand</li>
+      <li>Topics you'd like news, quizzes, or games about</li>
+      <li>Bugs, with the page where they happened</li>
+    </ul>
+    <a class="button ghost" href="{{ form_url }}" target="_blank" rel="noopener">Open the form in a new tab <span aria-hidden="true">↗</span></a>
+  </aside>
   <iframe class="feedback-frame" src="{{ form_url }}?embedded=true" title="Feedback form" loading="lazy"></iframe>
-  <a class="button" href="{{ form_url }}" target="_blank" rel="noopener">Open the feedback form in a new tab</a>
-</section>
+</div>
 {% endblock %}

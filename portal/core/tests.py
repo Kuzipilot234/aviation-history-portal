@@ -45,6 +45,13 @@ class NewsServiceTests(TestCase):
         text = '<p>Hello&nbsp;<a href="x">world</a> &amp; more</p><script>bad()</script>'
         self.assertEqual(news.strip_html(text), "Hello world & more")
 
+    def test_published_label(self):
+        import time
+
+        entry = {"published_parsed": time.strptime("2026-10-03 09:05", "%Y-%m-%d %H:%M")}
+        self.assertEqual(news.published_label(entry), "3 Oct 2026, 09:05")
+        self.assertEqual(news.published_label({"published": "Yesterday"}), "Yesterday")
+
     def test_preview_cuts_on_a_word(self):
         self.assertEqual(news.make_preview("one two three", length=9), "one two...")
         self.assertEqual(news.make_preview("short"), "short")
@@ -156,7 +163,7 @@ class PageTests(TestCase):
 
         answer = HISTORICAL_FIGURES[index]["answer"]
         self.assertContains(self.client.post("/history/guess/", {"guess": answer}), "Correct")
-        self.assertContains(self.client.post("/history/guess/", {"guess": "Nobody"}), "Wrong answer")
+        self.assertContains(self.client.post("/history/guess/", {"guess": "Nobody"}), "Not Nobody")
 
         self.client.post("/history/next/")
         self.assertNotEqual(self.client.session["figure_index"], index)

@@ -1,6 +1,6 @@
 {% extends "core/base.html" %}
 
-{% block title %}Aviation Radars · Kuzey's Aviation and History Portal{% endblock %}
+{% block title %}Radars · Kuzey's Aviation and History Portal{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -8,19 +8,39 @@
 {% endblock %}
 
 {% block content %}
-<section>
-  <h2>🌐 Global Aviation Radars</h2>
-  <div class="radar-grid">
-    <div class="stack">
-      <h4>🌍 Live Aviation Weather &amp; Wind Radar</h4>
-      <iframe src="https://www.ventusky.com/" title="Ventusky weather radar" loading="lazy"></iframe>
+<header class="page-head">
+  <span class="eyebrow">Global aviation radars</span>
+  <h1>Radars &amp; Atlas</h1>
+  <p>Live weather and wind conditions, alongside a map of airports and air bases that shaped aviation history.</p>
+</header>
+
+<div class="radar-grid">
+  <section class="card radar-card" aria-labelledby="weather-title">
+    <div class="card-header">
+      <div>
+        <span class="eyebrow">Source · Ventusky</span>
+        <h2 id="weather-title">Weather &amp; Wind Radar</h2>
+      </div>
+      <span class="chip live">Live</span>
     </div>
-    <div class="stack">
-      <h4>📍 Kuzey's Global Aviation &amp; Strategy Atlas</h4>
-      <div id="atlas" role="region" aria-label="Map of airports and air bases"></div>
+    <iframe src="https://www.ventusky.com/" title="Ventusky weather radar" loading="lazy"></iframe>
+  </section>
+
+  <section class="card radar-card" aria-labelledby="atlas-title">
+    <div class="card-header">
+      <div>
+        <span class="eyebrow">{{ map_points|length }} locations</span>
+        <h2 id="atlas-title">Aviation &amp; Strategy Atlas</h2>
+      </div>
     </div>
-  </div>
-</section>
+    <div id="atlas" role="region" aria-label="Map of airports and air bases"></div>
+    <div class="atlas-list" aria-label="Jump to a location">
+      {% for point in map_points %}
+        <button type="button" data-point="{{ forloop.counter0 }}">{{ point.name }}</button>
+      {% endfor %}
+    </div>
+  </section>
+</div>
 {{ map_points|json_script:"map-points" }}
 {% endblock %}
 
@@ -30,21 +50,35 @@
 <script>
   (function () {
     const points = JSON.parse(document.getElementById("map-points").textContent);
-    const map = L.map("atlas", { worldCopyJump: true }).setView([35, 25], 3);
+    const map = L.map("atlas", { worldCopyJump: true, scrollWheelZoom: false }).setView([35, 25], 3);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
       className: "dark-tiles",
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
-    for (const point of points) {
+
+    const markers = points.map(function (point) {
       const popup = document.createElement("div");
+      const coords = document.createElement("div");
+      coords.className = "code";
+      coords.textContent = point.lat.toFixed(4) + "°, " + point.lon.toFixed(4) + "°";
       const name = document.createElement("strong");
       name.textContent = point.name;
-      popup.append(name, document.createElement("br"), "ℹ️ " + point.details);
-      L.circleMarker([point.lat, point.lon], {
-        radius: 9, color: "#f97316", fillColor: "#f97316", fillOpacity: 0.85, weight: 2,
+      const details = document.createElement("div");
+      details.textContent = point.details;
+      popup.append(coords, name, details);
+      return L.circleMarker([point.lat, point.lon], {
+        radius: 8, color: "#ff7a1a", fillColor: "#ff7a1a", fillOpacity: 0.9, weight: 6, opacity: 0.25,
       }).bindPopup(popup).addTo(map);
-    }
+    });
+
+    document.querySelectorAll("[data-point]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const index = Number(button.dataset.point);
+        map.flyTo([points[index].lat, points[index].lon], 6, { duration: 1.2 });
+        markers[index].openPopup();
+      });
+    });
   })();
 </script>
 {% endblock %}

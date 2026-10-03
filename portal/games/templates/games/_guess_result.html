@@ -1,6 +1,6 @@
 {% if not choice %}
 {% elif correct %}
-<p class="message success">🏆 Correct! It was {{ answer }}!</p>
+<p class="alert success">Correct! It was {{ answer }}.</p>
 {% else %}
-<p class="message error">❌ Wrong answer! Review the clues and try again.</p>
+<p class="alert error">Not {{ choice }}. Review the clues and try again.</p>
 {% endif %}
