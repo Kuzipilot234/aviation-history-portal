@@ -1,17 +1,17 @@
-<section class="section" aria-label="{{ heading }}">
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">Source · {{ source }}</span>
-      <h2>{{ heading }}</h2>
-    </div>
-    <span class="eyebrow">{{ articles|length }} stories</span>
+<div class="section">
+  <div class="results-meta">
+    <span>
+      {{ articles|length }} stor{{ articles|length|pluralize:"y,ies" }}
+      {% if category != "All" %}in {{ category }}{% endif %}
+      {% if query %}matching “{{ query }}”{% endif %}
+    </span>
   </div>
   {% if articles %}
     <div class="news-grid">
       {% for article in articles %}
         <article class="card article">
           <div class="article-meta">
-            <span class="chip {{ kind }}">{{ article.category }}</span>
+            <span class="chip {{ article.category|lower }}">{{ article.category }}</span>
             <time>{{ article.published }}</time>
           </div>
           <h3>
@@ -27,12 +27,14 @@
             <p>{{ article.summary }}</p>
           {% endif %}
           {% if article.url %}
-            <a class="read-link" href="{{ article.url }}" target="_blank" rel="noopener">Read original article <span aria-hidden="true">↗</span></a>
+            <a class="link-arrow" href="{{ article.url }}" target="_blank" rel="noopener">Read article <span aria-hidden="true">↗</span></a>
           {% endif %}
         </article>
       {% endfor %}
     </div>
+  {% elif query %}
+    <div class="empty"><strong>No stories match “{{ query }}”.</strong><span>Try a different word, or switch the category to All.</span></div>
   {% else %}
-    <p class="empty">{{ empty }}</p>
+    <div class="empty"><strong>No news is available right now.</strong><span>The news sources may be busy. Please check back in a few minutes.</span></div>
   {% endif %}
-</section>
+</div>

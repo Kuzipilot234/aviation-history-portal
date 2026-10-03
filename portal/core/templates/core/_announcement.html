@@ -1,0 +1,9 @@
+<article class="announcement" data-tag="{{ item.tag }}">
+  <div class="announcement-meta">
+    <span class="chip{% if item.tag == 'New feature' %} accent{% elif item.tag == 'Fix' %} success{% endif %}">{{ item.tag }}</span>
+    {% if item.is_new %}<span class="chip live">New</span>{% endif %}
+    <time datetime="{{ item.date|date:'Y-m-d' }}">{{ item.date|date:"j M Y" }}</time>
+  </div>
+  <h3>{{ item.title }}</h3>
+  <p>{{ item.message }}</p>
+</article>

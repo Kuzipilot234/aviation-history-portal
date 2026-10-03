@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+
+{% block title %}News · Kuzey's Aviation and History Portal{% endblock %}
+
+{% block content %}
+<section class="section" aria-labelledby="news-title">
+  <header class="page-head">
+    <span class="eyebrow">Simple Flying · World History Encyclopedia</span>
+    <h1 id="news-title">News</h1>
+    <p>The latest aviation and history stories, updated every 15 minutes.</p>
+  </header>
+
+  <form class="news-toolbar" id="news-filters" role="search"
+        hx-get="{% url 'news:results' %}" hx-target="#results"
+        hx-trigger="input changed delay:300ms from:input[name=q], change">
+    <div class="segmented" role="radiogroup" aria-label="Category">
+      {% for option in categories %}
+        <label>
+          <input type="radio" name="category" value="{{ option }}"{% if option == category %} checked{% endif %}>
+          <span>{{ option }}</span>
+        </label>
+      {% endfor %}
+    </div>
+    <label class="search">
+      <span class="visually-hidden">Search news</span>
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" name="q" value="{{ query }}" placeholder="Search stories, e.g. Boeing or Rome" maxlength="80" autocomplete="off">
+    </label>
+  </form>
+
+  <div class="briefing-box" id="briefing">
+    <div class="row">
+      <p><strong style="color:var(--text)">Short on time?</strong> Get a three-paragraph AI summary of today's stories.</p>
+      <button type="button" class="small ghost" hx-get="{% url 'news:briefing' %}" hx-target="#briefing-text" hx-swap="innerHTML" hx-disabled-elt="this">
+        Summarize with AI <span class="htmx-indicator">· working...</span>
+      </button>
+    </div>
+    <div id="briefing-text"></div>
+  </div>
+
+  <div id="results" aria-live="polite">
+    {% include "news/_results.html" %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    // Keep the address bar in step with the filters so a filtered view can be shared.
+    const form = document.getElementById("news-filters");
+    form.addEventListener("htmx:afterRequest", function () {
+      const params = new URLSearchParams(new FormData(form));
+      if (params.get("category") === "All") params.delete("category");
+      if (!params.get("q")) params.delete("q");
+      const query = params.toString();
+      history.replaceState(null, "", location.pathname + (query ? "?" + query : ""));
+    });
+    form.addEventListener("submit", (event) => event.preventDefault());
+  })();
+</script>
+{% endblock %}

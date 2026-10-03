@@ -3,6 +3,7 @@ gunicorn==26.2.0
 whitenoise==6.12.0
 python-dotenv==1.2.4
 groq==1.7.0
+httpx==0.28.1
 feedparser==6.0.14
 Markdown==3.11
 nh3==0.3.7

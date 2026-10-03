@@ -1,0 +1,12 @@
+{% if events %}
+<ol class="events">
+  {% for event in events %}
+    <li class="event">
+      <span class="year">{{ event.year }}</span>
+      <p>{% if event.url %}<a href="{{ event.url }}" target="_blank" rel="noopener">{{ event.text }}</a>{% else %}{{ event.text }}{% endif %}</p>
+    </li>
+  {% endfor %}
+</ol>
+{% else %}
+<p class="alert info">Today's events couldn't be loaded right now. Please check back later.</p>
+{% endif %}

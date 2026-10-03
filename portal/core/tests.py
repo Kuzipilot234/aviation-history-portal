@@ -4,7 +4,7 @@ from unittest import mock
 from django.core.cache import cache
 from django.test import TestCase, override_settings
 
-from core.services import ai, news
+from core.services import ai, flights, news, onthisday
 from core.templatetags.portal import markdownify
 
 LOCMEM = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
@@ -102,24 +102,64 @@ class PageTests(TestCase):
         self.addCleanup(patcher.stop)
 
     def test_every_page_loads(self):
-        for url in ["/", "/chatbot/", "/quiz/", "/history/", "/feedback/", "/radars/"]:
+        for url in ["/", "/news/", "/chatbot/", "/quiz/", "/history/", "/feedback/", "/radars/"]:
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 200)
 
-    def test_home_lists_articles(self):
+    def test_home_is_simple(self):
         response = self.client.get("/")
+        self.assertContains(response, "Announcements")
+        self.assertContains(response, "A fresh look")
+        self.assertNotContains(response, "A350 milestone")
+
+    def test_news_page_lists_articles(self):
+        response = self.client.get("/news/")
         self.assertContains(response, "A350 milestone")
         self.assertContains(response, "Battle of Hastings")
 
+    def test_news_filters(self):
+        response = self.client.get("/news/results/", {"category": "History"})
+        self.assertContains(response, "Battle of Hastings")
+        self.assertNotContains(response, "A350 milestone")
+
+        response = self.client.get("/news/results/", {"q": "airbus"})
+        self.assertContains(response, "A350 milestone")
+        self.assertNotContains(response, "Battle of Hastings")
+
+        response = self.client.get("/news/results/", {"q": "zeppelin"})
+        self.assertContains(response, "No stories match")
+
+    @mock.patch("core.services.onthisday.httpx.get")
+    def test_on_this_day(self, get):
+        get.return_value = mock.Mock(
+            json=lambda: {
+                "selected": [
+                    {"year": 1990, "text": "German reunification.", "pages": [
+                        {"content_urls": {"desktop": {"page": "https://en.wikipedia.org/wiki/German_reunification"}}}
+                    ]},
+                    {"year": 1952, "text": "Operation Hurricane.", "pages": []},
+                ]
+            },
+            raise_for_status=lambda: None,
+        )
+        response = self.client.get("/on-this-day/")
+        self.assertContains(response, "1952")
+        self.assertContains(response, "German reunification.")
+        self.assertLess(response.content.index(b"1952"), response.content.index(b"1990"))
+
+    @mock.patch("core.services.onthisday.httpx.get", side_effect=RuntimeError("offline"))
+    def test_on_this_day_failure(self, get):
+        self.assertContains(self.client.get("/on-this-day/"), "couldn")
+
     @mock.patch("core.services.ai._complete", return_value="**Today** in aviation.")
     def test_briefing_is_cached(self, complete):
-        self.assertContains(self.client.get("/briefing/"), "<strong>Today</strong>")
-        self.client.get("/briefing/")
+        self.assertContains(self.client.get("/news/briefing/"), "<strong>Today</strong>")
+        self.client.get("/news/briefing/")
         complete.assert_called_once()
 
     @mock.patch("core.services.ai._complete", side_effect=RuntimeError("down"))
     def test_briefing_failure_shows_message(self, complete):
-        self.assertContains(self.client.get("/briefing/"), "temporarily unavailable")
+        self.assertContains(self.client.get("/news/briefing/"), "temporarily unavailable")
 
     @mock.patch("core.services.ai._complete", return_value="Mach 1 was first broken in 1947.")
     def test_chatbot_answers_then_enforces_cooldown(self, complete):
@@ -171,3 +211,41 @@ class PageTests(TestCase):
     def test_timeline_tabs(self):
         self.assertContains(self.client.get("/history/timeline/1944/"), "D-Day")
         self.assertEqual(self.client.get("/history/timeline/1999/").status_code, 404)
+
+
+STATE = ["4bc8c5", "PGT980R ", "Turkey", 0, 0, 30.2471, 40.6799, 6522.72, False, 186.29, 109.19, 11.7, None, 6600.0]
+GROUNDED = ["abc123", "", "Turkey", 0, 0, 29.0, 41.0, None, True, 0, 0, 0, None, None]
+
+
+@override_settings(CACHES=LOCMEM)
+class FlightTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
+    def test_parse_skips_planes_on_the_ground(self):
+        aircraft = flights._parse([STATE, GROUNDED])
+        self.assertEqual(len(aircraft), 1)
+        plane = aircraft[0]
+        self.assertEqual(plane["callsign"], "PGT980R")
+        self.assertEqual(plane["altitude_ft"], 21654)
+        self.assertEqual(plane["speed_kt"], 362)
+
+    @mock.patch("core.services.flights._fetch")
+    def test_falls_back_to_last_good_result(self, fetch):
+        fetch.return_value = flights._parse([STATE])
+        first = self.client.get("/radars/flights.json").json()
+        self.assertFalse(first["stale"])
+        self.assertEqual(len(first["aircraft"]), 1)
+
+        # Make the cached result old, then let OpenSky fail.
+        cached = cache.get(flights.CACHE_KEY)
+        cache.set(flights.CACHE_KEY, {**cached, "updated": cached["updated"] - 3600})
+        fetch.side_effect = RuntimeError("429")
+        second = self.client.get("/radars/flights.json").json()
+        self.assertTrue(second["stale"])
+        self.assertEqual(len(second["aircraft"]), 1)
+
+    @mock.patch("core.services.flights._fetch", side_effect=RuntimeError("down"))
+    def test_no_data_at_all(self, fetch):
+        data = self.client.get("/radars/flights.json").json()
+        self.assertEqual(data, {"aircraft": [], "updated": None, "stale": True})

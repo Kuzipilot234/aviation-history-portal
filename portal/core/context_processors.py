@@ -1,10 +1,10 @@
 from django.urls import reverse
 
 NAVIGATION = [
-    ("news:home", "News"),
-    ("ai:chatbot", "AI Chatbot"),
+    ("news:news", "News"),
+    ("ai:chatbot", "Chatbot"),
     ("ai:quiz", "Quiz"),
-    ("games:history", "History Games"),
+    ("games:history", "Games"),
     ("core:radars", "Radars"),
     ("core:feedback", "Feedback"),
 ]

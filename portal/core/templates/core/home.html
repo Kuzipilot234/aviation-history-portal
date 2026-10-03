@@ -1,0 +1,141 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<section class="hero">
+  {% with latest=announcements.0 %}
+    {% if latest %}
+      <a class="hero-badge" href="#announcements">
+        <span class="chip accent">{{ latest.tag }}</span> {{ latest.title }} <span aria-hidden="true">→</span>
+      </a>
+    {% endif %}
+  {% endwith %}
+  <h1>Aviation &amp; history, <span>all in one place.</span></h1>
+  <p>Read the latest news, ask the AI anything, test yourself with quizzes, and watch live flights over Türkiye.</p>
+  <div class="hero-actions">
+    <a class="button" href="{% url 'news:news' %}">Read the news</a>
+    <a class="button ghost" href="{% url 'ai:quiz' %}">Take a quiz</a>
+  </div>
+</section>
+
+<div class="home-columns">
+  <section class="card" id="announcements" aria-labelledby="announcements-title">
+    <div class="card-header">
+      <div>
+        <span class="eyebrow">What's new</span>
+        <h2 id="announcements-title">Announcements</h2>
+      </div>
+      {% if announcement_tags|length > 1 %}
+        <div class="filter-chips" role="group" aria-label="Filter announcements">
+          <button type="button" data-tag="" aria-pressed="true">All</button>
+          {% for tag in announcement_tags %}
+            <button type="button" data-tag="{{ tag }}" aria-pressed="false">{{ tag }}</button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="announcement-list">
+      {% for item in announcements %}
+        {% include "core/_announcement.html" %}
+      {% endfor %}
+      <p class="no-match" hidden>No announcements with this tag yet.</p>
+    </div>
+    {% if older_announcements %}
+      <details class="older">
+        <summary>Show {{ older_announcements|length }} older announcement{{ older_announcements|length|pluralize }}</summary>
+        <div class="announcement-list">
+          {% for item in older_announcements %}
+            {% include "core/_announcement.html" %}
+          {% endfor %}
+        </div>
+      </details>
+    {% endif %}
+  </section>
+
+  <section class="card" aria-labelledby="otd-title">
+    <div class="card-header">
+      <div>
+        <span class="eyebrow">{{ today|date:"j F" }}</span>
+        <h2 id="otd-title">On this day</h2>
+      </div>
+      <span class="chip">Wikipedia</span>
+    </div>
+    <div hx-get="{% url 'core:on_this_day' %}" hx-trigger="load" hx-swap="outerHTML">
+      <div class="skeleton" aria-label="Loading events"><span></span><span></span><span></span></div>
+    </div>
+  </section>
+</div>
+
+<section class="section" aria-labelledby="explore-title">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Explore</span>
+      <h2 id="explore-title">Everything on the portal</h2>
+    </div>
+  </div>
+  <div class="feature-grid">
+    <a class="feature" href="{% url 'news:news' %}">
+      <span class="feature-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h10M7 17h6"/></svg></span>
+      <h3>News</h3>
+      <p>The latest aviation and history stories, with search and filters.</p>
+      <span class="more">Read news →</span>
+    </a>
+    <a class="feature" href="{% url 'ai:chatbot' %}">
+      <span class="feature-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></span>
+      <h3>AI Chatbot</h3>
+      <p>Ask anything about general aviation, military aviation, or history.</p>
+      <span class="more">Start a chat →</span>
+    </a>
+    <a class="feature" href="{% url 'ai:quiz' %}">
+      <span class="feature-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.5 2.5L16 9.5"/></svg></span>
+      <h3>Quiz</h3>
+      <p>An AI-generated quiz on any topic, at the difficulty you choose.</p>
+      <span class="more">Take a quiz →</span>
+    </a>
+    <a class="feature" href="{% url 'games:history' %}">
+      <span class="feature-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+      <h3>History Games</h3>
+      <p>A World War II timeline and a "Who Am I?" guessing game.</p>
+      <span class="more">Play →</span>
+    </a>
+    <a class="feature" href="{% url 'core:radars' %}">
+      <span class="feature-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6-6"/></svg></span>
+      <h3>Live Flights &amp; Radars</h3>
+      <p>Aircraft flying over Türkiye right now, live weather, and an airbase atlas.</p>
+      <span class="more">Open radars →</span>
+    </a>
+    <a class="feature" href="{% url 'core:feedback' %}">
+      <span class="feature-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.5-4.5L15 6l3 3-9.5 9.5z"/><path d="M13 8l3 3"/></svg></span>
+      <h3>Feedback</h3>
+      <p>Tell Kuzey what you like and what you'd like to see next.</p>
+      <span class="more">Give feedback →</span>
+    </a>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const buttons = document.querySelectorAll("[data-tag]");
+    const items = document.querySelectorAll("#announcements .announcement");
+    const noMatch = document.querySelector("#announcements .no-match");
+    const older = document.querySelector("#announcements .older");
+    buttons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        const tag = button.dataset.tag;
+        buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+        let shown = 0;
+        items.forEach(function (item) {
+          const match = !tag || item.dataset.tag === tag;
+          item.hidden = !match;
+          if (match) shown += 1;
+        });
+        // A filter searches older posts too.
+        if (older && tag) older.open = true;
+        noMatch.hidden = shown > 0;
+      });
+    });
+  })();
+</script>
+{% endblock %}

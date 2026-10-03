@@ -1,6 +1,6 @@
 <div class="timeline-track" role="tablist" aria-label="Years">
   {% for tab_year in years %}
-    <button type="button" class="year" role="tab" aria-selected="{% if tab_year == year %}true{% else %}false{% endif %}"
+    <button type="button" class="year-tab" role="tab" aria-selected="{% if tab_year == year %}true{% else %}false{% endif %}"
             hx-get="{% url 'games:timeline' tab_year %}" hx-target="#timeline">{{ tab_year }}</button>
   {% endfor %}
 </div>

@@ -9,31 +9,49 @@
 
 {% block content %}
 <header class="page-head">
-  <span class="eyebrow">Global aviation radars</span>
-  <h1>Radars &amp; Atlas</h1>
-  <p>Live weather and wind conditions, alongside a map of airports and air bases that shaped aviation history.</p>
+  <span class="eyebrow">Live flights &amp; radars</span>
+  <h1>Radars</h1>
+  <p>Aircraft flying over Türkiye right now, live weather and wind conditions, and a map of famous airports and air bases.</p>
 </header>
 
+<section class="card map-card" aria-labelledby="flights-title">
+  <div class="card-header">
+    <div>
+      <span class="eyebrow">Source · OpenSky Network</span>
+      <h2 id="flights-title">Live Flight Tracker</h2>
+    </div>
+    <span class="chip live" id="flight-status">Loading</span>
+  </div>
+  <div class="map tall" id="flight-map" role="region" aria-label="Map of aircraft over Türkiye"></div>
+  <div class="map-footer">
+    <div class="flight-stats">
+      <div><strong id="stat-count">–</strong><span>Aircraft in the air</span></div>
+      <div><strong id="stat-highest">–</strong><span>Highest flight</span></div>
+      <div><strong id="stat-fastest">–</strong><span>Fastest flight</span></div>
+    </div>
+    <span id="flight-updated">Positions refresh every minute. Click a plane for details.</span>
+  </div>
+</section>
+
 <div class="radar-grid">
-  <section class="card radar-card" aria-labelledby="weather-title">
+  <section class="card map-card" aria-labelledby="weather-title">
     <div class="card-header">
       <div>
         <span class="eyebrow">Source · Ventusky</span>
-        <h2 id="weather-title">Weather &amp; Wind Radar</h2>
+        <h2 id="weather-title">Weather &amp; Wind</h2>
       </div>
-      <span class="chip live">Live</span>
     </div>
     <iframe src="https://www.ventusky.com/" title="Ventusky weather radar" loading="lazy"></iframe>
   </section>
 
-  <section class="card radar-card" aria-labelledby="atlas-title">
+  <section class="card map-card" aria-labelledby="atlas-title">
     <div class="card-header">
       <div>
         <span class="eyebrow">{{ map_points|length }} locations</span>
-        <h2 id="atlas-title">Aviation &amp; Strategy Atlas</h2>
+        <h2 id="atlas-title">Aviation Atlas</h2>
       </div>
     </div>
-    <div id="atlas" role="region" aria-label="Map of airports and air bases"></div>
+    <div class="map" id="atlas" role="region" aria-label="Map of airports and air bases"></div>
     <div class="atlas-list" aria-label="Jump to a location">
       {% for point in map_points %}
         <button type="button" data-point="{{ forloop.counter0 }}">{{ point.name }}</button>
@@ -42,6 +60,7 @@
   </section>
 </div>
 {{ map_points|json_script:"map-points" }}
+{{ flight_area_center|json_script:"flight-center" }}
 {% endblock %}
 
 {% block scripts %}
@@ -49,33 +68,115 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
   (function () {
+    const TILES = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+    const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    const ORANGE = "#ea580c";
+
+    function baseMap(id, center, zoom) {
+      const map = L.map(id, { scrollWheelZoom: false, worldCopyJump: true }).setView(center, zoom);
+      L.tileLayer(TILES, { maxZoom: 18, className: "soft-tiles", attribution: ATTRIBUTION }).addTo(map);
+      return map;
+    }
+
+    function popupContent(lines) {
+      // Build popups with textContent so feed data can never inject HTML.
+      const box = document.createElement("div");
+      lines.forEach(function ([tag, text, className]) {
+        const el = document.createElement(tag);
+        el.textContent = text;
+        if (className) el.className = className;
+        box.append(el);
+      });
+      return box;
+    }
+
+    /* Live flights ------------------------------------------------------- */
+
+    const center = JSON.parse(document.getElementById("flight-center").textContent);
+    const flightMap = baseMap("flight-map", center, 6);
+    const planes = L.layerGroup().addTo(flightMap);
+    const status = document.getElementById("flight-status");
+    const fmt = new Intl.NumberFormat("en-US");
+
+    function planeIcon(heading) {
+      return L.divIcon({
+        className: "plane-icon",
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+        html: '<svg width="22" height="22" viewBox="0 0 24 24" style="transform: rotate(' + heading + 'deg)">' +
+              '<path fill="currentColor" stroke="#fff" stroke-width="0.8" d="M12 2c.8 0 1.4.9 1.4 2v5.2l7.6 4.4v2l-7.6-2.3v4.4l2.2 1.7V21L12 20l-3.6 1v-1.6l2.2-1.7v-4.4L3 15.6v-2l7.6-4.4V4c0-1.1.6-2 1.4-2z"/></svg>',
+      });
+    }
+
+    function setStatus(text, live) {
+      status.textContent = text;
+      status.className = "chip " + (live ? "live" : "paused");
+    }
+
+    async function loadFlights() {
+      try {
+        const response = await fetch("{% url 'core:live_flights' %}");
+        const data = await response.json();
+        planes.clearLayers();
+        data.aircraft.forEach(function (plane) {
+          const lines = [
+            ["div", plane.country, "popup-code"],
+            ["strong", plane.callsign],
+            ["div", plane.altitude_ft != null ? "Altitude: " + fmt.format(plane.altitude_ft) + " ft" : "Altitude: unknown"],
+            ["div", plane.speed_kt != null ? "Speed: " + fmt.format(plane.speed_kt) + " kt" : "Speed: unknown"],
+            ["div", "Heading: " + plane.heading + "°"],
+          ];
+          L.marker([plane.lat, plane.lon], { icon: planeIcon(plane.heading), title: plane.callsign })
+            .bindPopup(popupContent(lines))
+            .addTo(planes);
+        });
+
+        const withAltitude = data.aircraft.filter((p) => p.altitude_ft != null);
+        const withSpeed = data.aircraft.filter((p) => p.speed_kt != null);
+        const highest = withAltitude.reduce((a, b) => (b.altitude_ft > a.altitude_ft ? b : a), withAltitude[0]);
+        const fastest = withSpeed.reduce((a, b) => (b.speed_kt > a.speed_kt ? b : a), withSpeed[0]);
+        document.getElementById("stat-count").textContent = fmt.format(data.aircraft.length);
+        document.getElementById("stat-highest").textContent = highest ? fmt.format(highest.altitude_ft) + " ft" : "–";
+        document.getElementById("stat-fastest").textContent = fastest ? fmt.format(fastest.speed_kt) + " kt" : "–";
+
+        const updated = data.updated ? new Date(data.updated * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : null;
+        if (data.stale && !data.aircraft.length) {
+          setStatus("Unavailable", false);
+          document.getElementById("flight-updated").textContent = "Live data is unavailable right now. Please try again later.";
+        } else if (data.stale) {
+          setStatus("Paused", false);
+          document.getElementById("flight-updated").textContent = "Showing positions from " + updated + ". Live data will resume shortly.";
+        } else {
+          setStatus("Live", true);
+          document.getElementById("flight-updated").textContent = "Updated " + updated + ". Click a plane for details.";
+        }
+      } catch (error) {
+        setStatus("Unavailable", false);
+      }
+    }
+
+    loadFlights();
+    setInterval(function () {
+      if (!document.hidden) loadFlights();
+    }, 60000);
+
+    /* Aviation atlas ----------------------------------------------------- */
+
     const points = JSON.parse(document.getElementById("map-points").textContent);
-    const map = L.map("atlas", { worldCopyJump: true, scrollWheelZoom: false }).setView([35, 25], 3);
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18,
-      className: "dark-tiles",
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-
+    const atlas = baseMap("atlas", [35, 25], 3);
     const markers = points.map(function (point) {
-      const popup = document.createElement("div");
-      const coords = document.createElement("div");
-      coords.className = "code";
-      coords.textContent = point.lat.toFixed(4) + "°, " + point.lon.toFixed(4) + "°";
-      const name = document.createElement("strong");
-      name.textContent = point.name;
-      const details = document.createElement("div");
-      details.textContent = point.details;
-      popup.append(coords, name, details);
       return L.circleMarker([point.lat, point.lon], {
-        radius: 8, color: "#ff7a1a", fillColor: "#ff7a1a", fillOpacity: 0.9, weight: 6, opacity: 0.25,
-      }).bindPopup(popup).addTo(map);
+        radius: 7, color: ORANGE, fillColor: ORANGE, fillOpacity: 0.9, weight: 6, opacity: 0.2,
+      }).bindPopup(popupContent([
+        ["div", point.lat.toFixed(4) + "°, " + point.lon.toFixed(4) + "°", "popup-code"],
+        ["strong", point.name],
+        ["div", point.details],
+      ])).addTo(atlas);
     });
-
     document.querySelectorAll("[data-point]").forEach(function (button) {
       button.addEventListener("click", function () {
         const index = Number(button.dataset.point);
-        map.flyTo([points[index].lat, points[index].lon], 6, { duration: 1.2 });
+        atlas.flyTo([points[index].lat, points[index].lon], 6, { duration: 1.2 });
         markers[index].openPopup();
       });
     });

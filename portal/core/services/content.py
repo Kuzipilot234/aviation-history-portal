@@ -1,17 +1,32 @@
 """Fixed portal content: announcements, quotes, history games and map points."""
 
+from datetime import date
+
+# Newest first. "tag" is one of: New feature, Update, Fix.
 ANNOUNCEMENTS = [
     {
-        "date": "September 26, 2026",
-        "title": "!!Important Announcement!!",
+        "date": date(2026, 10, 3),
+        "tag": "New feature",
+        "title": "A fresh look, plus three new features",
+        "message": (
+            "The portal has a cleaner design. New: \"On this day\" on the home "
+            "page, a live flight tracker on the Radars page, and search and "
+            "filters on the News page."
+        ),
+    },
+    {
+        "date": date(2026, 9, 26),
+        "tag": "Fix",
+        "title": "AI features are working again",
         "message": "The issue is now fixed. You can use the AI features freely!",
     },
     {
-        "date": "September 18, 2026",
-        "title": "Major Update!! A new AI daily news briefing function is added",
+        "date": date(2026, 9, 18),
+        "tag": "New feature",
+        "title": "AI daily news briefing",
         "message": (
             "You can now see a short summarized briefing of the latest "
-            "aviation and history news!"
+            "aviation and history news."
         ),
     },
 ]
