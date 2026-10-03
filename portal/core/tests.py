@@ -111,6 +111,7 @@ class PageTests(TestCase):
         self.assertContains(response, "Announcements")
         self.assertContains(response, "A fresh look")
         self.assertNotContains(response, "A350 milestone")
+        self.assertContains(response, 'id="theme-toggle"')
 
     def test_news_page_lists_articles(self):
         response = self.client.get("/news/")
