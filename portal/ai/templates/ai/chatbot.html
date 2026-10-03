@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+
+{% block title %}AI Chatbot · Kuzey's Aviation and History Portal{% endblock %}
+
+{% block content %}
+<section>
+  <h2>🤖 Kuzey's Aviation &amp; History Portal AI Chatbot</h2>
+  <p class="section-intro">Ask the portal AI about general aviation, military aviation, or history.</p>
+
+  <form class="stack" hx-post="{% url 'ai:chatbot_ask' %}" hx-target="#chat-answer" hx-disabled-elt="find button">
+    <div class="field">
+      <label for="question">Ask anything to the portal AI chatbot:</label>
+      <textarea id="question" name="question" rows="4" maxlength="{{ max_chars }}" required
+                placeholder="e.g. Why did the Concorde stop flying?"></textarea>
+    </div>
+    <div class="row">
+      <button type="submit">Get an answer</button>
+      <span class="htmx-indicator">Preparing an answer...</span>
+    </div>
+  </form>
+
+  <div id="chat-answer" aria-live="polite"></div>
+</section>
+{% endblock %}

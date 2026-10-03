@@ -1,0 +1,24 @@
+<h2>Final Score: {{ score }}/{{ total }} ({{ percentage }}%)</h2>
+{% if score == total %}
+  <p class="message success"><span class="celebrate" aria-hidden="true">🎉</span> Perfect score! Outstanding work.</p>
+{% elif percentage >= 70 %}
+  <p class="message success">Great result! You have a strong grasp of the topic.</p>
+{% else %}
+  <p class="message info">Good attempt. Review the explanations below and try another quiz.</p>
+{% endif %}
+
+<h3>Answer Review</h3>
+<div class="stack">
+  {% for result in results %}
+    <div class="message result {% if result.is_correct %}success{% else %}error{% endif %}">
+      {% if result.is_correct %}
+        <strong>✅ Question {{ forloop.counter }}: Correct</strong>
+      {% else %}
+        <strong>❌ Question {{ forloop.counter }}: Incorrect — correct answer: {{ result.correct_answer }}</strong>
+      {% endif %}
+      <span>{{ result.question }}</span>
+      {% if result.explanation %}<span class="hint">Explanation: {{ result.explanation }}</span>{% endif %}
+    </div>
+  {% endfor %}
+</div>
+<p class="hint">Change the settings above and select Generate New Quiz to play again.</p>

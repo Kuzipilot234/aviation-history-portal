@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<p class="message info quote">{{ quote }}</p>
+
+<section>
+  <h2>📢 Announcements</h2>
+  <div class="stack">
+    {% for announcement in announcements %}
+      <div class="message info">
+        <strong>{{ announcement.title }}</strong>
+        <span class="date">{{ announcement.date }}</span>
+        <p>{{ announcement.message }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section>
+  <h2>📰 Global News Feed</h2>
+  <p class="section-intro">Read the latest aviation and history stories from the selected RSS sources.</p>
+
+  <h3>☀️ Daily Briefing</h3>
+  <p class="hint">A short AI summary based on the latest RSS articles. Refreshed every six hours.</p>
+  <div class="panel briefing" hx-get="{% url 'news:briefing' %}" hx-trigger="load" hx-swap="innerHTML">
+    <p class="hint">Preparing today's briefing...</p>
+  </div>
+</section>
+
+{% include "news/_articles.html" with heading="✈️ Aviation News" articles=aviation_articles empty="No aviation news is available right now." %}
+{% include "news/_articles.html" with heading="📜 History News" articles=history_articles empty="No history news is available right now." %}
+{% endblock %}

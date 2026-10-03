@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: aviation-history-portal
+    runtime: python
+    plan: free
+    rootDir: portal
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    # AI calls can take a while, so allow 120 s per request.
+    startCommand: gunicorn portal_site.wsgi --workers 2 --threads 4 --timeout 120
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.7"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: DEBUG
+        value: "false"

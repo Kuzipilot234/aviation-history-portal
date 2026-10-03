@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+
+{% block title %}Feedback · Kuzey's Aviation and History Portal{% endblock %}
+
+{% block content %}
+<section>
+  <h2>💬 Help Improve the Portal</h2>
+  <p class="section-intro">
+    Tell us what you like, what is confusing, and what you would like to see
+    in a future update. Your feedback will help improve the portal.
+  </p>
+  <iframe class="feedback-frame" src="{{ form_url }}?embedded=true" title="Feedback form" loading="lazy"></iframe>
+  <a class="button" href="{{ form_url }}" target="_blank" rel="noopener">Open the feedback form in a new tab</a>
+</section>
+{% endblock %}

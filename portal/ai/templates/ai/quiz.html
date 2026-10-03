@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+
+{% block title %}Quiz · Kuzey's Aviation and History Portal{% endblock %}
+
+{% block content %}
+<section>
+  <h2>🏆 AI-Generated Knowledge Quiz</h2>
+  <p class="section-intro">Build a quiz around any topic, then submit it to reveal your score, correct answers, and explanations.</p>
+
+  <div class="quiz-setup">
+    <form id="quiz-settings" hx-post="{% url 'ai:quiz_generate' %}" hx-target="#quiz-area" hx-disabled-elt="find button">
+      <div class="field">
+        <label for="topic">What should the quiz be about?</label>
+        <input type="text" id="topic" name="topic" value="{{ default_topic }}" maxlength="{{ topic_max_chars }}" required>
+      </div>
+      <div class="field">
+        <label for="difficulty">Choose a difficulty</label>
+        <select id="difficulty" name="difficulty">
+          {% for level in difficulties %}
+            <option value="{{ level }}"{% if level == "Medium" %} selected{% endif %}>{{ level }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="count">How many questions do you want? <output id="count-value" for="count">{{ min_questions }}</output></label>
+        <input type="range" id="count" name="count" min="{{ min_questions }}" max="{{ max_questions }}" value="{{ min_questions }}">
+      </div>
+      <div class="row">
+        <button type="submit">✨ Generate New Quiz</button>
+        <span class="htmx-indicator">Creating your personalized quiz...</span>
+      </div>
+    </form>
+
+    <p class="message info" id="quiz-preview">
+      Your quiz will contain <strong id="preview-count">{{ min_questions }} questions</strong>
+      at <strong id="preview-difficulty">medium</strong> difficulty.
+      Answer every question, then select Check My Answers to see the results.
+    </p>
+  </div>
+</section>
+
+<section id="quiz-area" aria-live="polite">
+  {% include "ai/_quiz_area.html" %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const count = document.getElementById("count");
+    const difficulty = document.getElementById("difficulty");
+    function updatePreview() {
+      document.getElementById("count-value").textContent = count.value;
+      document.getElementById("preview-count").textContent = count.value + " questions";
+      document.getElementById("preview-difficulty").textContent = difficulty.value.toLowerCase();
+    }
+    count.addEventListener("input", updatePreview);
+    difficulty.addEventListener("change", updatePreview);
+    updatePreview();
+  })();
+</script>
+{% endblock %}

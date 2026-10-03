@@ -1,0 +1,26 @@
+{% if warning %}<p class="message warning">{{ warning }}</p>{% endif %}
+{% if error %}<p class="message error">{{ error }}</p>{% endif %}
+{% if success %}<p class="message success">{{ success }}</p>{% endif %}
+
+{% if questions %}
+<h2>Your Challenge</h2>
+<form class="quiz-form" hx-post="{% url 'ai:quiz_check' %}" hx-target="#quiz-area" hx-disabled-elt="find button[type=submit]">
+  {% for question in questions %}
+    <fieldset class="panel question">
+      <legend>
+        <span class="count">Question {{ question.number }} of {{ questions|length }}</span><br>
+        {{ question.text }}
+      </legend>
+      {% for value, option in question.options %}
+        <label class="option">
+          <input type="radio" name="{{ question.name }}" value="{{ value }}"{% if question.chosen == value %} checked{% endif %}>
+          <span>{{ option }}</span>
+        </label>
+      {% endfor %}
+    </fieldset>
+  {% endfor %}
+  <div class="row">
+    <button type="submit">✅ Check My Answers</button>
+  </div>
+</form>
+{% endif %}

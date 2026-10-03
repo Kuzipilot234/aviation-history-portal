@@ -1,0 +1,27 @@
+<section>
+  <h2>{{ heading }}</h2>
+  {% if articles %}
+    <div class="news-grid">
+      {% for article in articles %}
+        <article class="panel article">
+          <h4>{{ article.title }}</h4>
+          <span class="meta">{{ article.category }} · {{ article.published }}</span>
+          {% if article.preview != article.summary %}
+            <p>{{ article.preview }}</p>
+            <details>
+              <summary>Show more</summary>
+              <p>{{ article.summary }}</p>
+            </details>
+          {% else %}
+            <p>{{ article.summary }}</p>
+          {% endif %}
+          {% if article.url %}
+            <a class="button" href="{{ article.url }}" target="_blank" rel="noopener">Read original article</a>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="message info">{{ empty }}</p>
+  {% endif %}
+</section>

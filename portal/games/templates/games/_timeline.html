@@ -1,0 +1,9 @@
+<div class="tabs" role="tablist">
+  {% for tab_year in years %}
+    <button type="button" role="tab" aria-selected="{% if tab_year == year %}true{% else %}false{% endif %}"
+            hx-get="{% url 'games:timeline' tab_year %}" hx-target="#timeline">{{ tab_year }}</button>
+  {% endfor %}
+</div>
+<div class="panel" role="tabpanel">
+  <p><strong>{{ title }}:</strong> {{ text }}</p>
+</div>

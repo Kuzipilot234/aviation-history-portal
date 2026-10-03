@@ -1,0 +1,50 @@
+{% extends "core/base.html" %}
+
+{% block title %}Aviation Radars · Kuzey's Aviation and History Portal{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
+
+{% block content %}
+<section>
+  <h2>🌐 Global Aviation Radars</h2>
+  <div class="radar-grid">
+    <div class="stack">
+      <h4>🌍 Live Aviation Weather &amp; Wind Radar</h4>
+      <iframe src="https://www.ventusky.com/" title="Ventusky weather radar" loading="lazy"></iframe>
+    </div>
+    <div class="stack">
+      <h4>📍 Kuzey's Global Aviation &amp; Strategy Atlas</h4>
+      <div id="atlas" role="region" aria-label="Map of airports and air bases"></div>
+    </div>
+  </div>
+</section>
+{{ map_points|json_script:"map-points" }}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+  (function () {
+    const points = JSON.parse(document.getElementById("map-points").textContent);
+    const map = L.map("atlas", { worldCopyJump: true }).setView([35, 25], 3);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      className: "dark-tiles",
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+    for (const point of points) {
+      const popup = document.createElement("div");
+      const name = document.createElement("strong");
+      name.textContent = point.name;
+      popup.append(name, document.createElement("br"), "ℹ️ " + point.details);
+      L.circleMarker([point.lat, point.lon], {
+        radius: 9, color: "#f97316", fillColor: "#f97316", fillOpacity: 0.85, weight: 2,
+      }).bindPopup(popup).addTo(map);
+    }
+  })();
+</script>
+{% endblock %}

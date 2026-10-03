@@ -1,0 +1,10 @@
+{% load portal %}{% if warning %}
+<p class="message warning">{{ warning }}</p>
+{% elif error %}
+<p class="message error">{{ error }}</p>
+{% elif answer %}
+<div class="panel stack">
+  <h3>Strategic Intelligence Report</h3>
+  <div class="ai-text">{{ answer|markdownify }}</div>
+</div>
+{% endif %}

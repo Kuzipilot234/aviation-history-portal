@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+
+{% block title %}History Mini Games · Kuzey's Aviation and History Portal{% endblock %}
+
+{% block content %}
+<h2>📜 Interactive Chronology &amp; Strategy Games</h2>
+
+<section>
+  <h3>⚔️ World War II Timeline</h3>
+  <div id="timeline">
+    {% include "games/_timeline.html" %}
+  </div>
+</section>
+
+<section>
+  <h3>🕵️ Historical 'Who Am I?' Challenge</h3>
+  <div id="who-am-i" class="stack">
+    {% include "games/_who_am_i.html" %}
+  </div>
+</section>
+{% endblock %}
